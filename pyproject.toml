@@ -12,6 +12,8 @@ python-dotenv = "^0.15.0"
 pydantic = "^1.7.3"
 pandas = "^1.5.3"
 numpy = "^1.24.2"
+jupyter = "^1.0.0"
+matplotlib = "^3.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"

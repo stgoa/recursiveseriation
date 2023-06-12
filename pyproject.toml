@@ -1,0 +1,34 @@
+[tool.poetry]
+name ="recursiveseriation"
+version = "0.1.0"
+description = "Python implementation of the 'Recursive Seriation' algorithm for reordering strict circular Robisonian matrices"
+authors = ["Santiago Armstrong <santiagoarmstrong@gmail.com>"]
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+structlog = "^20.2.0"
+python-dotenv = "^0.15.0"
+pydantic = "^1.7.3"
+pandas = "^1.5.3"
+numpy = "^1.24.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.2"
+autopep8 = "^1.5.4"
+docformatter = "^1.4"
+pylint = "^2.6.0"
+flake8 = "3.8.4"
+isort = "^5.7.0"
+bandit = "^1.7.0"
+black = "22.3.0"
+
+[tool.black]
+line-length = 79
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"

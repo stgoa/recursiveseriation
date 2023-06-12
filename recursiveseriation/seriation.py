@@ -4,6 +4,8 @@ import types
 from recursiveseriation.qtree import Qtree
 from recursiveseriation.neighbours_graph import NNGraph
 
+from typing import Callable
+
 """
 Author: Santiago Armstrong
 email: sarmstrong@uc.cl
@@ -16,28 +18,50 @@ Documentation pending
 class RecursiveSeriation:
     """docstring for RecursiveSeriation"""
 
-    def __init__(self, dissimilarity, n, verbose=0):
+    def __init__(self, dissimilarity: Callable, n: int, verbose: int = 0):
         """
-        dissimilarity : binary function"""
+        Constructor of the RecursiveSeriation class
+
+        Parameters
+        ----------
+        dissimilarity : Callable
+            dissimilarity function
+        n : int
+            number of elements
+        verbose : int, optional
+            verbosity level, by default 0
+        """
 
         if not isinstance(dissimilarity, types.FunctionType):
             self.diss = lambda i, j: dissimilarity[i, j]
         else:
             self.diss = dissimilarity
 
-        self.X = [i for i in range(n)]
+        self.X = [
+            i for i in range(n)
+        ]  # list of elements to be sorted, represented by their index
 
-        self.verbose = verbose
-        self.order = None
+        self.verbose = verbose  # verbosity level
+        self.order = None  # final order
 
         self.memory_save = True
 
-    def permute(self, array, indices):
+    def permute(self, array: np.ndarray, indices: np.array) -> np.ndarray:
+        """Compute the permutation of an array
+
+        Args:
+            array (np.ndarray): array to be permuted
+            indices (np.array): permutation array
+
+        Returns:
+            np.ndarray: permuted array
+        """
         if len(array) == 1:
             return array
         return [list(i) for i in np.take(array, indices, axis=0)]
 
     def initial(self):
+        """Compute the initial Q-trees, (singleton trees intially)"""
         trees = []
         for x in self.X:
             tree = Qtree(children=[x], leave=True)
@@ -46,6 +70,7 @@ class RecursiveSeriation:
         return trees
 
     def ineq(self, A, A_prime, B, B_prime, z):
+        """Compute the max-min inequality between two sets of border (Border Candidates Orientation)"""
         return max(
             np.min([self.diss(z, a) for a in A]),
             np.min([self.diss(z, a_prime) for a_prime in A_prime]),
@@ -55,6 +80,18 @@ class RecursiveSeriation:
         )
 
     def border_candidates_orientation(self, A_prime, A, B, B_prime):
+        """Given border candidates A, A_prime, B, B_prime, of in interval I, this procedure determines if
+        I must be fixed, reversed or if it is not orientable.
+
+        Args:
+            A_prime (_type_): _description_
+            A (_type_): _description_
+            B (_type_): _description_
+            B_prime (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
 
         for z in self.X:
             O1 = self.ineq(A, A_prime, B, B_prime, z)
@@ -261,7 +298,8 @@ class RecursiveSeriation:
         # obtain new trees from the set of connected componets
         new_trees = G.get_DFS_order()
 
-        print("iter", iter)
+        if self.verbose > 0:
+            print("iter", iter)
 
         if len(new_trees) == 1:
             # perform the final internal orientation

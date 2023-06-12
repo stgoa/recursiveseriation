@@ -57,7 +57,7 @@ class Qtree:
             for child in children:
                 child.parent = self
 
-    def borders(self)->List:
+    def borders(self) -> List:
         """
         Returns the border of the Qtree
 
@@ -147,6 +147,9 @@ class Qtree:
                     current = current.right_tree
 
     def insert_in_parent(self):
+        """
+        Inserts the Qtree in its parent Qtree (deletes a level of the Qtree)
+        """
         # ojo qnodes != qtree ojo con root
         pos = self.parent.children.index(self)
         self.parent.children.pop(pos)
@@ -156,7 +159,7 @@ class Qtree:
             self.parent.children.insert(pos + aux, child)
             aux += 1
 
-    def __repr__(self)->str:
+    def __repr__(self) -> str:
         """
         Returns a string representation of the Qtree
         """

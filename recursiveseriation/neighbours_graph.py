@@ -1,6 +1,9 @@
 # encoding=utf-8
-import numpy as np
 import types
+from typing import Callable, List
+
+import numpy as np
+
 from recursiveseriation.qtree import Qtree
 
 """
@@ -13,27 +16,35 @@ Documentation pending
 
 
 class NNGraph:
-    def __init__(self, node_list, dissimilarity, verbose=0):
-        self.nodes = node_list
+    def __init__(
+        self, node_list: List, dissimilarity: Callable, verbose: int = 0
+    ):
+        self.nodes = node_list  # list of nodes
         self.node_ids = [
             i for i in range(len(node_list))
         ]  # internal enumeration of the elements
         self.weights = lambda i, j: dissimilarity(
             node_list[i], node_list[j]
         )  # function
-        self.components = []
-        self.N = len(node_list)
+        self.components = []  # list of connected components of the graph
+        self.N = len(node_list)  # number of nodes
         self.borders = []
         self.partition = None
-        self.neighbourhood = {i: set() for i in self.node_ids}
-        self.verbose = verbose
+        self.neighbourhood = {
+            i: set() for i in self.node_ids
+        }  # neighbourhood function
+        self.verbose = verbose  # verbosity level
 
         self.get_neighbours()
 
-    def nearest_neighbours(self, node_id):
+    def nearest_neighbours(self, node_id: int):
         """
-        Complexity = O(N)
-        where N = len(weights)
+        Compute the nearest neighbours of a node in O(N) time where N = len(weights)
+
+        Parameters
+        ----------
+        node_id : int
+            index of the node in the list of nodes
         """
 
         nns = []  # current arg min
@@ -57,10 +68,7 @@ class NNGraph:
     def get_neighbours(self):
 
         """
-        Construct the neighbourhood function
-
-        Complexity = O(N^2)
-        where N = len(weights)
+        Construct the neighbourhood function in O(N^2) time where N = len(weights)
         """
 
         dir_edges = [self.nearest_neighbours(node) for node in self.node_ids]
@@ -73,14 +81,17 @@ class NNGraph:
 
     def get_degree_one_nodes(self):
         """
-        Compute the set of degree one nodes
-        Complexity: O(N)"""
+        Compute the set of degree one nodes in O(N) time where N = len(weights)
+        """
 
         for i in self.node_ids:
             if len(self.neighbourhood[i]) == 1:
                 self.borders.append(i)
 
     def depth_first_search(self, start, visited=[]):
+        """
+        Depth first search algorithm
+        """
         visited.append(start)
         for next_node in self.neighbourhood[start] - set(visited):
             visited = self.depth_first_search(next_node, visited=visited)
@@ -89,7 +100,9 @@ class NNGraph:
         return visited
 
     def get_DFS_order(self):
-        """Complexity: O(N)"""
+        """
+        Compute the DFS order of the graph in O(N) time where N = len(weights)
+        """
         trees = []
 
         self.get_degree_one_nodes()

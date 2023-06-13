@@ -283,7 +283,7 @@ class RecursiveSeriation:
             )
 
         # obtain new trees from the set of connected componets
-        new_trees = G.get_DFS_order()
+        new_trees = G.get_Qtrees_from_components()
 
         logging.info(f"iter {iter}")
 

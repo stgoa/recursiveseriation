@@ -106,7 +106,7 @@ class NearestNeighboursGraph:
             visited = self.depth_first_search(next_node, visited=visited)
         return visited
 
-    def get_DFS_order(self) -> List[Qtree]:
+    def get_Qtrees_from_components(self) -> List[Qtree]:
         """
         Compute the DFS order of the graph in O(N) time where N = len(weights), starting from the degree one nodes.
         Each DFS run corresponds to a connected component of the graph (and thus a Qtree).

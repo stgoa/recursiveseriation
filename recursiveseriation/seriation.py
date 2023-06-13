@@ -268,7 +268,7 @@ class RecursiveSeriation:
                 return val
 
             G = NNGraph(
-                node_list=trees,
+                input_trees=trees,
                 dissimilarity=dminw,
             )
         else:

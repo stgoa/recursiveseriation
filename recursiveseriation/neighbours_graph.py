@@ -20,18 +20,18 @@ Documentation pending
 class NNGraph:
     def __init__(
         self,
-        node_list: List[Qtree],
+        input_trees: List[Qtree],
         dissimilarity: Callable,
     ):
-        self.nodes = node_list  # type: List[Qtree]
+        self.input_trees = input_trees  # type: List[Qtree]
         self.node_ids = [
-            i for i in range(len(node_list))
+            i for i in range(len(input_trees))
         ]  # internal enumeration of the elements
         self.weights = lambda i, j: dissimilarity(
-            node_list[i], node_list[j]
+            input_trees[i], input_trees[j]
         )  # function
         self.components = []  # list of connected components of the graph
-        self.N = len(node_list)  # number of nodes
+        self.N = len(input_trees)  # number of nodes
         self.partition = None
         self.neighbourhood = defaultdict(set)  # neighbourhood mapping
 
@@ -128,8 +128,8 @@ class NNGraph:
                 component_nodes = []
                 depth = -np.inf
                 for i in component_indices:
-                    component_nodes.append(self.nodes[i])
-                    depth = max(depth, self.nodes[i].depth)
+                    component_nodes.append(self.input_trees[i])
+                    depth = max(depth, self.input_trees[i].depth)
 
                 # generate new Q tree
                 tree = Qtree(

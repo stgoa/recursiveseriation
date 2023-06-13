@@ -66,3 +66,32 @@ def random_permutation(N: int) -> np.array:
     pi = np.arange(0, N)
     np.random.shuffle(pi)
     return pi
+
+def are_circular_orderings_same(list1, list2):
+    """
+    Determines if two lists are the same up to circular permutations or reversals.
+
+    Args:
+        list1 (list): The first list.
+        list2 (list): The second list.
+
+    Returns:
+        bool: True if the lists are the same up to circular permutations or reversals, False otherwise.
+    """
+    if len(list1) != len(list2):
+        return False
+
+    circular_permutation = list1 + list1
+    circular_permutation_str = ' '.join(map(str, circular_permutation))
+    list2_str = ' '.join(map(str, list2))
+
+    if list2_str in circular_permutation_str:
+        return True
+
+    reversed_circular_permutation = list1[::-1] + list1[::-1]
+    reversed_circular_permutation_str = ' '.join(map(str, reversed_circular_permutation))
+
+    if list2_str in reversed_circular_permutation_str:
+        return True
+
+    return False

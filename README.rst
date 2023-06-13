@@ -14,12 +14,6 @@ For examples take a look at the notebook example.ipynb_
 Installation
 ------------
 
-There are two options to install the package
-
-
-Cloning from repository
-~~~~~~~~~~~~~~~~~~~~~~~
-
 The package can be installed using poetry
 
 .. code-block:: console
@@ -30,14 +24,7 @@ The package can be installed using poetry
     $ poetry install
 
 
-Or using ``setup.py`` file
 
-.. code-block:: console
-
-    $ git clone https://github.com/stgoa/recursiveseriation.git
-    $ cd recursiveseriation
-    $ python -m venv .venv
-    $ python setup.py install
 
 
 

@@ -17,7 +17,7 @@ Documentation pending
 """
 
 
-class NNGraph:
+class NearestNeighboursGraph:
     def __init__(
         self,
         input_trees: List[Qtree],
@@ -27,12 +27,10 @@ class NNGraph:
         self.node_ids = [
             i for i in range(len(input_trees))
         ]  # internal enumeration of the elements
-        self.weights = lambda i, j: dissimilarity(
+        self.index_dissimilarity = lambda i, j: dissimilarity(
             input_trees[i], input_trees[j]
-        )  # function
-        self.components = []  # list of connected components of the graph
-        self.N = len(input_trees)  # number of nodes
-        self.partition = None
+        )  # internal dissimilarity function (between indices)
+        
         self.neighbourhood = defaultdict(set)  # neighbourhood mapping
 
         self.populate_neighbourhood_mapping()
@@ -54,7 +52,7 @@ class NNGraph:
         min_dist = np.inf  # current min
         for i in self.node_ids:  # nearest neight
             if i != node_id:
-                dist_i = self.weights(
+                dist_i = self.index_dissimilarity(
                     i, node_id
                 )  # compute dissimilarity between nodes
                 if (
@@ -71,7 +69,7 @@ class NNGraph:
         """
         Construct the neighbourhood function in O(N^2) time where N = len(weights).
 
-        This is a symmetric relation between nodes.
+        This is a symmetric mapping between nodes.
         """
 
         for node1 in self.node_ids:
@@ -88,6 +86,7 @@ class NNGraph:
         """
         degree_one_nodes = []
         for i in self.node_ids:
+            # if the node has only one neighbour, it is a degree one node
             if len(self.neighbourhood[i]) == 1:
                 degree_one_nodes.append(i)
         return degree_one_nodes
@@ -124,18 +123,18 @@ class NNGraph:
         logging.debug(f"degree one nodes {degree_one_nodes}")
 
         all_visited = set()
-        for v in degree_one_nodes:
-            # run a dfs starting from each degree one node
-            # each of the runs correpsonds to a connected component of the
+        for start in degree_one_nodes:
+            # run a dfs starting from each degree-one node
+            # each of the runs corresponds to a connected component of the
             # graph (and thus a Qtree)
-            if v not in all_visited:
+            if start not in all_visited:
 
                 component_indices = self.depth_first_search(
-                    v
-                )  # get the list of nodes (index) in the component
+                    start=start # node index where to start the DFS
+                )  
 
-                component_nodes = []
-                depth = -np.inf
+                component_nodes = [] # list of nodes in the component (original trees)
+                depth = -np.inf # depth of the component (max depth of the original trees)
                 for i in component_indices:
                     component_nodes.append(self.input_trees[i])
                     depth = max(depth, self.input_trees[i].depth)
@@ -145,7 +144,11 @@ class NNGraph:
                     children=component_nodes,
                     depth=depth + 1,
                 )
+
+                # add to list of trees
                 trees.append(tree)
+
+                # update visited nodes
                 all_visited.update(component_indices)
 
         return trees

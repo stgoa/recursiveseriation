@@ -2,7 +2,7 @@
 import numpy as np
 import logging
 from recursiveseriation.qtree import Qtree
-from recursiveseriation.neighbours_graph import NNGraph
+from recursiveseriation.neighbours_graph import NearestNeighboursGraph
 
 from typing import Callable, List, Optional, Tuple
 
@@ -271,13 +271,13 @@ class RecursiveSeriation:
                 val, _ = self.dmin(x, y)
                 return val
 
-            G = NNGraph(
+            G = NearestNeighboursGraph(
                 input_trees=trees,
                 dissimilarity=dminw,
             )
         else:
 
-            G = NNGraph(
+            G = NearestNeighboursGraph(
                 node_list=trees,
                 dissimilarity=lambda x, y: dmins[x, y],
             )

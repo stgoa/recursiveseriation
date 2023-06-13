@@ -1,4 +1,5 @@
 # encoding=utf-8
+from functools import cache
 import numpy as np
 import logging
 from recursiveseriation.qtree import Qtree
@@ -9,16 +10,14 @@ from typing import Callable, List, Optional, Tuple
 """
 Author: Santiago Armstrong
 email: sarmstrong@uc.cl
-
-
-Documentation pending
 """
 
 
 class RecursiveSeriation:
-    """docstring for RecursiveSeriation"""
+    """Recursive seriation algorithm, based on the paper "An optimal algorithm for strict circular seriation" by Armstrong, S., Guzman, C. & Sing-Long, C. (2021).
+    """
 
-    def __init__(self, dissimilarity: Callable, n: int):
+    def __init__(self, dissimilarity: Callable, n: int, memory_save: bool = False):
         """
         Constructor of the RecursiveSeriation class
 
@@ -28,21 +27,26 @@ class RecursiveSeriation:
             dissimilarity function from [0, n-1] x [0, n-1] to [0, +inf]
         n : int
             number of elements
+        memory_save : bool, optional
+            flag to save memory, by not storing the tree distance matrix (which is going to be a submatrix of the input dissimilarity matrix), by default False
         """
 
         if not isinstance(dissimilarity, Callable):
-            self.diss = lambda i, j: dissimilarity[i, j]
+            self.element_dissimilarity = lambda i, j: dissimilarity[i, j]
         else:
-            self.diss = dissimilarity
+            self.element_dissimilarity = dissimilarity
 
-        self.X = [
+        self.elements = [
             i for i in range(n)
         ]  # list of elements to be sorted, represented by their index
+
         self.order = None  # seriation ordering of the elements
+        self.memory_save = memory_save # TODO: the cache decorator is not working with this flag
+        if self.memory_save:
+            logging.warning(f"memory_save was set {self.memory_save}, but it is not yet implemented")
 
-        self.memory_save = True
-
-    def permute(self, array: np.ndarray, indices: np.array) -> List:
+    @staticmethod
+    def permute(array: np.ndarray, indices: np.array) -> List:
         """Compute the permutation of an array
 
         Args:
@@ -59,12 +63,12 @@ class RecursiveSeriation:
     def initialize(self) -> List[Qtree]:
         """Compute the initial Q-trees, (singleton trees intially)"""
         trees = []
-        for x in self.X:
+        for x in self.elements:
             tree = Qtree(children=[x], is_singleton=True)
             trees.append(tree)
         return trees
 
-    def ineq(
+    def _maxmin_inequlity(
         self,
         A: List[Qtree],
         A_prime: List[Qtree],
@@ -72,13 +76,24 @@ class RecursiveSeriation:
         B_prime: List[Qtree],
         z: int,
     ) -> bool:
-        """Compute the max-min inequality between two sets of border (Border Candidates Orientation)"""
+        """Compute the max min inequlity between two sets of border candidates (Border Candidates Orientation)
+        
+        Args:
+            A (List[Qtree]): border candidates of the first set
+            A_prime (List[Qtree]): border candidates of the complement of the first set
+            B (List[Qtree]): border candidates of the second set
+            B_prime (List[Qtree]): border candidates of the complement of the second set
+            z (int): element to be compared with the border candidates
+        
+        Returns:
+            bool: True if the max min inequlity is satisfied, False otherwise
+        """
         return max(
-            np.min([self.diss(z, a) for a in A]),
-            np.min([self.diss(z, a_prime) for a_prime in A_prime]),
+            np.min([self.element_dissimilarity(z, a) for a in A]),
+            np.min([self.element_dissimilarity(z, a_prime) for a_prime in A_prime]),
         ) < min(
-            np.max([self.diss(z, b) for b in B]),
-            np.max([self.diss(z, b_prime) for b_prime in B_prime]),
+            np.max([self.element_dissimilarity(z, b) for b in B]),
+            np.max([self.element_dissimilarity(z, b_prime) for b_prime in B_prime]),
         )
 
     def border_candidates_orientation(
@@ -92,20 +107,20 @@ class RecursiveSeriation:
         I must be fixed, reversed or if it is not orientable.
 
         Args:
-            A_prime (_type_): _description_
-            A (_type_): _description_
-            B (_type_): _description_
-            B_prime (_type_): _description_
+            A_prime (List[Qtree]): border candidates of the complement of I
+            A (List[Qtree]): border candidates of I
+            B (List[Qtree]): border candidates of I
+            B_prime (List[Qtree]): border candidates of the complement of I
 
         Returns:
-            _type_: _description_
+            str: "correct" if I is correct, "reverse" if I must be reversed, "non-orientable" if I is not orientable
         """
 
-        for z in self.X:
-            O1 = self.ineq(A, A_prime, B, B_prime, z)
-            O2 = self.ineq(B, B_prime, A, A_prime, z)
-            O3 = self.ineq(A, B_prime, B, A_prime, z)
-            O4 = self.ineq(B, A_prime, A, B_prime, z)
+        for z in self.elements:
+            O1 = self._maxmin_inequlity(A, A_prime, B, B_prime, z)
+            O2 = self._maxmin_inequlity(B, B_prime, A, A_prime, z)
+            O3 = self._maxmin_inequlity(A, B_prime, B, A_prime, z)
+            O4 = self._maxmin_inequlity(B, A_prime, A, B_prime, z)
 
             if O1 or O2:
                 return "correct"
@@ -114,6 +129,11 @@ class RecursiveSeriation:
         return "non-orientable"
 
     def internal_orientation(self, tree: Qtree) -> None:
+        """Perform an internal orientation of a tree, by comparing the borders of the adjacent children trees
+
+        Args:
+            tree (Qtree): tree to be oriented
+        """
         if len(tree.children) > 2 and tree.depth > 1:
 
             while not all(
@@ -155,6 +175,11 @@ class RecursiveSeriation:
                             T_i.insert_in_parent()
 
     def final_internal_orientation(self, tree: Qtree) -> None:
+        """Perform the final internal orientation of a tree, by comparing the borders of the adjacent children trees
+        
+        Args:
+            tree (Qtree): tree to be oriented
+        """
 
         while not all(
             [tree.children[i].is_singleton for i in range(len(tree.children))]
@@ -212,13 +237,25 @@ class RecursiveSeriation:
                             T_i.reverse()
                             T_i.insert_in_parent()
 
-    def dmin(self, tree1: Qtree, tree2: Qtree) -> Tuple[float, List]:
+    @cache
+    def tree_dissimilarity(self, tree1: Qtree, tree2: Qtree) -> Tuple[float, List]:
+        """Compute the dissimilarity between two Qtrees. The dissimilarity is the minimum dissimilarity between the borders of the two trees. 
+
+        We use a cache decorator to save the dissimilarity between two trees, since it is going to be used multiple times.
+
+        Args:
+            tree1 (Qtree): first tree
+            tree2 (Qtree): second tree
+
+        Returns:
+            Tuple[float, List]: dissimilarity between the two trees and the list of pairs of borders that achieve the minimum dissimilarity
+        """
         argdmin = None
         current_min = np.inf
         for x in tree1.borders():
             for y in tree2.borders():
                 # call the dissimilarity function between x and y
-                diss_x_y = self.diss(x, y)
+                diss_x_y = self.element_dissimilarity(x, y)
                 if diss_x_y < current_min:
                     argdmin = [(x, y)]
                     current_min = diss_x_y
@@ -229,58 +266,39 @@ class RecursiveSeriation:
     def sort(
         self, trees: Optional[List[Qtree]] = None, iter: int = 0
     ) -> List[int]:
+        """Sort the elements using the recursive seriation algorithm
+        
+        Args:
+            trees (Optional[List[Qtree]], optional): list of trees to be sorted. If None, the trees are initialized. Defaults to None.
+            iter (int, optional): iteration number (recursion depth). Defaults to 0. (only for logging purposes)
+        
+        Returns:
+            List[int]: seriation ordering of the elements
+        """
 
+        # initialize the trees
         if trees is None:
             trees = self.initialize()
 
-        # we can save memory by not storing the dmins matrix (which is going to
-        # be a submatrix of the dissimilarity matrix)
-        dmins = []
-        # this tradeoff is between memory and time
-
         for tree1 in trees:
-            row = []
             for tree2 in trees:
                 if tree2 != tree1:
-                    # Compute dmin
-                    dmin_val, argdmin = self.dmin(tree1, tree2)
+                    # Compute the dissimilarity between the two trees
+                    dmin_val, argdmin = self.tree_dissimilarity(tree1, tree2)
 
                     logging.debug(f"argdmin {dmin_val} {argdmin}")
 
                     # perform an external orientation
-
                     for t in argdmin:
                         x, y = t
                         tree1.external_orientation(x)
                         tree2.external_orientation(y)
 
-                    if not self.memory_save:
-                        row.append(dmin_val)
-                else:
-                    row.append(0.0)
-            if not self.memory_save:
-                dmins.append(row)
-        dmins = np.asarray(dmins)
-
         # compute the nearest neighbours graph
-        if self.memory_save:
-            # when we try to save memory, we dont store the dmins matrix
-            # this is the case when we have a large number of elements
-            # and explicitly storing the dmins matrix is not possible
-            def dminw(x, y):
-                val, _ = self.dmin(x, y)
-                return val
-
-            G = NearestNeighboursGraph(
+        G = NearestNeighboursGraph(
                 input_trees=trees,
-                dissimilarity=dminw,
-            )
-        else:
-
-            G = NearestNeighboursGraph(
-                node_list=trees,
-                dissimilarity=lambda x, y: dmins[x, y],
-            )
+                dissimilarity=lambda x, y : self.tree_dissimilarity(x, y)[0],
+        )
 
         # obtain new trees from the set of connected componets
         new_trees = G.get_Qtrees_from_components()

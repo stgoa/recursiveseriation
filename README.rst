@@ -24,7 +24,7 @@ The package can be installed using poetry
 
 .. code-block:: console
 
-    $ git clone link-to-repository
+    $ git clone https://github.com/stgoa/recursiveseriation.git
     $ cd recursiveseriation
     $ python -m venv .venv
     $ poetry install
@@ -34,7 +34,7 @@ Or using ``setup.py`` file
 
 .. code-block:: console
 
-    $ git clone link-to-repository
+    $ git clone https://github.com/stgoa/recursiveseriation.git
     $ cd recursiveseriation
     $ python -m venv .venv
     $ python setup.py install

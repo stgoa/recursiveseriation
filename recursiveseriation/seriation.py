@@ -14,10 +14,11 @@ email: sarmstrong@uc.cl
 
 
 class RecursiveSeriation:
-    """Recursive seriation algorithm, based on the paper "An optimal algorithm for strict circular seriation" by Armstrong, S., Guzman, C. & Sing-Long, C. (2021).
-    """
+    """Recursive seriation algorithm, based on the paper "An optimal algorithm for strict circular seriation" by Armstrong, S., Guzman, C. & Sing-Long, C. (2021)."""
 
-    def __init__(self, dissimilarity: Callable, n: int, memory_save: bool = False):
+    def __init__(
+        self, dissimilarity: Callable, n: int, memory_save: bool = False
+    ):
         """
         Constructor of the RecursiveSeriation class
 
@@ -41,9 +42,11 @@ class RecursiveSeriation:
         ]  # list of elements to be sorted, represented by their index
 
         self.order = None  # seriation ordering of the elements
-        self.memory_save = memory_save # TODO: the cache decorator is not working with this flag
+        self.memory_save = memory_save  # TODO: the cache decorator is not working with this flag
         if self.memory_save:
-            logging.warning(f"memory_save was set {self.memory_save}, but it is not yet implemented")
+            logging.warning(
+                f"memory_save was set {self.memory_save}, but it is not yet implemented"
+            )
 
     @staticmethod
     def permute(array: np.ndarray, indices: np.array) -> List:
@@ -61,7 +64,11 @@ class RecursiveSeriation:
         return [list(i) for i in np.take(array, indices, axis=0)]
 
     def initialize(self) -> List[Qtree]:
-        """Compute the initial Q-trees, (singleton trees intially)"""
+        """Compute the initial Q-trees, (singleton trees intially)
+
+        Returns:
+            List[Qtree]: list of singleton trees
+        """
         trees = []
         for x in self.elements:
             tree = Qtree(children=[x], is_singleton=True)
@@ -77,23 +84,27 @@ class RecursiveSeriation:
         z: int,
     ) -> bool:
         """Compute the max min inequlity between two sets of border candidates (Border Candidates Orientation)
-        
+
         Args:
             A (List[Qtree]): border candidates of the first set
             A_prime (List[Qtree]): border candidates of the complement of the first set
             B (List[Qtree]): border candidates of the second set
             B_prime (List[Qtree]): border candidates of the complement of the second set
             z (int): element to be compared with the border candidates
-        
+
         Returns:
             bool: True if the max min inequlity is satisfied, False otherwise
         """
         return max(
             np.min([self.element_dissimilarity(z, a) for a in A]),
-            np.min([self.element_dissimilarity(z, a_prime) for a_prime in A_prime]),
+            np.min(
+                [self.element_dissimilarity(z, a_prime) for a_prime in A_prime]
+            ),
         ) < min(
             np.max([self.element_dissimilarity(z, b) for b in B]),
-            np.max([self.element_dissimilarity(z, b_prime) for b_prime in B_prime]),
+            np.max(
+                [self.element_dissimilarity(z, b_prime) for b_prime in B_prime]
+            ),
         )
 
     def border_candidates_orientation(
@@ -176,7 +187,7 @@ class RecursiveSeriation:
 
     def final_internal_orientation(self, tree: Qtree) -> None:
         """Perform the final internal orientation of a tree, by comparing the borders of the adjacent children trees
-        
+
         Args:
             tree (Qtree): tree to be oriented
         """
@@ -238,8 +249,10 @@ class RecursiveSeriation:
                             T_i.insert_in_parent()
 
     @cache
-    def tree_dissimilarity(self, tree1: Qtree, tree2: Qtree) -> Tuple[float, List]:
-        """Compute the dissimilarity between two Qtrees. The dissimilarity is the minimum dissimilarity between the borders of the two trees. 
+    def tree_dissimilarity(
+        self, tree1: Qtree, tree2: Qtree
+    ) -> Tuple[float, List]:
+        """Compute the dissimilarity between two Qtrees. The dissimilarity is the minimum dissimilarity between the borders of the two trees.
 
         We use a cache decorator to save the dissimilarity between two trees, since it is going to be used multiple times.
 
@@ -267,11 +280,11 @@ class RecursiveSeriation:
         self, trees: Optional[List[Qtree]] = None, iter: int = 0
     ) -> List[int]:
         """Sort the elements using the recursive seriation algorithm
-        
+
         Args:
             trees (Optional[List[Qtree]], optional): list of trees to be sorted. If None, the trees are initialized. Defaults to None.
             iter (int, optional): iteration number (recursion depth). Defaults to 0. (only for logging purposes)
-        
+
         Returns:
             List[int]: seriation ordering of the elements
         """
@@ -296,8 +309,8 @@ class RecursiveSeriation:
 
         # compute the nearest neighbours graph
         G = NearestNeighboursGraph(
-                input_trees=trees,
-                dissimilarity=lambda x, y : self.tree_dissimilarity(x, y)[0],
+            input_trees=trees,
+            dissimilarity=lambda x, y: self.tree_dissimilarity(x, y)[0],
         )
 
         # obtain new trees from the set of connected componets
@@ -308,6 +321,7 @@ class RecursiveSeriation:
         if len(new_trees) == 1:
             # perform the final internal orientation
             self.final_internal_orientation(new_trees[0])
+            # store the seriation ordering
             self.order = new_trees[0].frontier()
             return self.order
 

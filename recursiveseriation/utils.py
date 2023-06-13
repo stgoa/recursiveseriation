@@ -68,7 +68,7 @@ def random_permutation(N: int) -> np.array:
     return pi
 
 
-def are_circular_orderings_same(list1 : list, list2 : list)->bool:
+def are_circular_orderings_same(list1: list, list2: list) -> bool:
     """
     Determines if two lists are the same up to circular permutations or reversals.
 

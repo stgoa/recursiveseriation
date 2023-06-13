@@ -32,7 +32,7 @@ class NearestNeighboursGraph:
             list of Qtree objects
         dissimilarity : Callable
             dissimilarity function between Qtree objects
-            
+
         Attributes
         ----------
         input_trees : List[Qtree]
@@ -51,7 +51,7 @@ class NearestNeighboursGraph:
         self.index_dissimilarity = lambda i, j: dissimilarity(
             input_trees[i], input_trees[j]
         )  # internal dissimilarity function (between indices)
-        
+
         self.neighbourhood = defaultdict(set)  # neighbourhood mapping
 
         self.populate_neighbourhood_mapping()
@@ -127,7 +127,7 @@ class NearestNeighboursGraph:
             index of the node in the list of nodes
         visited : List[int]
             list of visited nodes
-        
+
         Returns
         -------
         visited : List[int]
@@ -143,7 +143,7 @@ class NearestNeighboursGraph:
 
     def get_Qtrees_from_components(self) -> List[Qtree]:
         """
-        Obtains the Qtree objects from the connected components of the graph. 
+        Obtains the Qtree objects from the connected components of the graph.
 
         To do this, we:
         1. Compute the degree one nodes of the graph.
@@ -173,11 +173,15 @@ class NearestNeighboursGraph:
             if start not in all_visited:
 
                 component_indices = self.depth_first_search(
-                    start=start # node index where to start the DFS
-                )  
+                    start=start  # node index where to start the DFS
+                )
 
-                component_nodes = [] # list of nodes in the component (original trees)
-                depth = -np.inf # depth of the component (max depth of the original trees)
+                component_nodes = (
+                    []
+                )  # list of nodes in the component (original trees)
+                depth = (
+                    -np.inf
+                )  # depth of the component (max depth of the original trees)
                 for i in component_indices:
                     component_nodes.append(self.input_trees[i])
                     depth = max(depth, self.input_trees[i].depth)

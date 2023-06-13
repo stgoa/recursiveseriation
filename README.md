@@ -6,6 +6,7 @@ See:
 - [Google Scholar](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_VV7RLwAAAAJ&citation_for_view=_VV7RLwAAAAJ:u5HHmVD_uO8C)
 - [SIMODS](https://epubs.siam.org/doi/abs/10.1137/21M139356X)
 
+For examples take a look at the notebook [example.ipynb](examples/example.ipynb)
 
 Installation
 ------------

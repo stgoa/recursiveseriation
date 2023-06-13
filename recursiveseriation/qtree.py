@@ -5,9 +5,6 @@ import logging
 """
 Author: Santiago Armstrong
 email: sarmstrong@uc.cl
-
-
-Documentation pending
 """
 
 
@@ -32,6 +29,23 @@ class Qtree:
             parent of the Qtree, by default None
         depth : int, optional
             depth of the Qtree, by default 0
+
+        Attributes
+        ----------
+        is_singleton : bool
+            if the Qtree is a singleton (tree leaf)
+        left_tree : Qtree
+            left subtree
+        right_tree : Qtree
+            right subtree
+        depth : int
+            depth of the Qtree (root is 0)
+        children : list
+            list of children Qtree objects
+        oriented : bool
+            True if the Qtree is oriented, False otherwise
+        parent : Qtree
+            parent of the Qtree
         """
 
         self.is_singleton = is_singleton
@@ -77,9 +91,9 @@ class Qtree:
             return self.children
         return self.right_tree.borders()
 
-    def frontier(self):
+    def frontier(self) -> List[int]:
         """
-        Returns the frontier of the Qtree
+        Returns the frontier of the Qtree in any admisible order
         """
         if self.is_singleton:
             return self.children
@@ -91,13 +105,21 @@ class Qtree:
 
             return frontier
 
-    def is_at_the_left(self, element):
+    def is_at_the_left(self, element: int) -> bool:
         """
-        Returns True if the element is at the left of the Qtree
+        Returns True if the element is in the left subtree of the Qtree
         """
         return element in self.left_tree.frontier()
 
-    def external_orientation(self, element):
+    def external_orientation(self, element: int):
+        """
+        Computes the external orientation of the Qtree, using the element as reference
+
+        Parameters
+        ----------
+        element : int
+            element known to be at a border of the interval represented by the tree, used to compute the orientation of the tree
+        """
 
         if not self.is_singleton:
 
@@ -147,12 +169,16 @@ class Qtree:
         TODO: this can be improved with a linked list, instead of a list
         the methods index and insert are O(n) in a regular Python list
         """
-        pos = self.parent.children.index(self)
-        self.parent.children.pop(pos)
+        pos = self.parent.children.index(
+            self
+        )  # position of the Qtree in the parent
+        self.parent.children.pop(pos)  # delete the Qtree from the parent
         aux = 0
         for child in self.children:
-            child.parent = self.parent
-            self.parent.children.insert(pos + aux, child)
+            child.parent = self.parent  # change the parent of the children
+            self.parent.children.insert(
+                pos + aux, child
+            )  # insert the children in the parent preserving the order
             aux += 1
 
     def __repr__(self) -> str:
@@ -173,3 +199,7 @@ class Qtree:
         Reverses the Qtree
         """
         self.children.reverse()
+        # change left and right
+        aux = self.left_tree
+        self.left_tree = self.right_tree
+        self.right_tree = aux

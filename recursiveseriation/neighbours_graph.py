@@ -32,7 +32,6 @@ class NNGraph:
         )  # function
         self.components = []  # list of connected components of the graph
         self.N = len(node_list)  # number of nodes
-        self.degree_one_nodes = [] # list of degree one nodes in the graph
         self.partition = None
         self.neighbourhood = defaultdict(set)  # neighbourhood mapping
 
@@ -66,7 +65,7 @@ class NNGraph:
 
         return nns  # return minimal interval
 
-    def populate_neighbourhood_mapping(self):
+    def populate_neighbourhood_mapping(self)->None:
         """
         Construct the neighbourhood function in O(N^2) time where N = len(weights).
 
@@ -79,55 +78,59 @@ class NNGraph:
                     self.neighbourhood[node1].add(node2)
                     self.neighbourhood[node2].add(node1)
 
-    def get_degree_one_nodes(self):
+    def get_degree_one_nodes(self)->List[int]:
         """
         Compute the set of degree one nodes in O(N) time where N = len(weights)
         """
-
+        degree_one_nodes = []
         for i in self.node_ids:
             if len(self.neighbourhood[i]) == 1:
-                self.degree_one_nodes.append(i)
-
-    def depth_first_search(self, start:int, visited=[])->List[int]:
+                degree_one_nodes.append(i)
+        return degree_one_nodes
+    
+    def depth_first_search(self, start:int, visited=None)->List[int]:
         """
         Depth first search algorithm.
 
         We want to keep track of the visited nodes, so that we don't visit them again. But also the order in which we visit them (since this defines an interval).
 
         """
+        if visited is None:
+            visited = []
+
         visited.append(start)
         for next_node in self.neighbourhood[start] - set(visited):
             visited = self.depth_first_search(next_node, visited=visited)
-            if len(self.neighbourhood[start] - set(visited)) == 0:
-                break
         return visited
 
-    def get_DFS_order(self):
+    def get_DFS_order(self)->List[Qtree]:
         """
-        Compute the DFS order of the graph in O(N) time where N = len(weights)
+        Compute the DFS order of the graph in O(N) time where N = len(weights), starting from the degree one nodes.
+        Each DFS run corresponds to a connected component of the graph (and thus a Qtree).
+        This returns a list of Qtree objects in DFS order.
         """
         trees = []
 
-        self.get_degree_one_nodes()
-        if len(self.degree_one_nodes) == 0:
-            self.degree_one_nodes.append(0)
+        degree_one_nodes = self.get_degree_one_nodes()
+        if len(degree_one_nodes) == 0: # if there are no degree one nodes, we have one large connected component
+            degree_one_nodes.append(0)
 
-        logging.debug(f"degree one nodes {self.degree_one_nodes}")
+        logging.debug(f"degree one nodes {degree_one_nodes}")
 
         all_visited = set()
-        for v in self.degree_one_nodes:
+        for v in degree_one_nodes:
             # run a dfs starting from each degree one node
             # each of the runs correpsonds to a connected component of the graph (and thus a Qtree)
             if v not in all_visited: 
 
-                component_indices = self.depth_first_search(v, visited=[]) # get the list of nodes (index) in the component
+                component_indices = self.depth_first_search(v) # get the list of nodes (index) in the component
                 
                 component_nodes = []
                 depth = -np.inf
                 for i in component_indices:
                     component_nodes.append(self.nodes[i])
                     depth = max(depth, self.nodes[i].depth)
-                    
+
                 # generate new Q tree
                 tree = Qtree(
                     children=component_nodes,

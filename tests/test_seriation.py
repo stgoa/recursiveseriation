@@ -42,3 +42,42 @@ def test_seriation():
     tau = inversepermutation(pi)
 
     assert are_circular_orderings_same(tau, order)
+
+
+def test_seriation_of_distance_matrix_of_points_in_circle():
+
+    points_in_circle = [
+        [0.0, 1.0],
+        [0.5, 0.8660254037844386],
+        [0.8660254037844386, 0.5],
+        [1.0, 0.0],
+        [0.8660254037844387, -0.5],
+        [0.5, -0.8660254037844384],
+        [1.2246467991473532e-16, -1.0],
+        [-0.5, -0.8660254037844386],
+        [-0.8660254037844384, -0.5],
+        [-1.0, -2.4492935982947064e-16],
+        [-0.8660254037844387, 0.5],
+        [-0.5, 0.8660254037844384],
+    ]
+
+    tau = random_permutation(len(points_in_circle))
+    points_in_circle = permute(points_in_circle, tau)
+
+    D = np.zeros((len(points_in_circle), len(points_in_circle)))
+
+    for i in range(len(points_in_circle)):
+        for j in range(len(points_in_circle)):
+            D[i, j] = np.linalg.norm(
+                np.asarray(points_in_circle[i])
+                - np.asarray(points_in_circle[j])
+            )
+
+
+    rs = RecursiveSeriation(
+        dissimilarity=lambda x, y: D[x, y],
+        n=len(points_in_circle),
+    )
+    order = rs.sort()
+
+    assert are_circular_orderings_same(order, inversepermutation(tau))

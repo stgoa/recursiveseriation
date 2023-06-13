@@ -48,7 +48,7 @@ def permute(array: np.ndarray, indices: np.array) -> np.ndarray:
         np.ndarray: permuted matrix
     """
     array = np.asarray(array)[indices]
-    if len(array.shape) == 2:
+    if len(array.shape) == 2 and array.shape[0] == array.shape[1]:
         for idx in range(array.shape[0]):
             array[idx] = array[idx][indices]
     return array

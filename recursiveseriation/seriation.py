@@ -48,20 +48,6 @@ class RecursiveSeriation:
                 f"memory_save was set {self.memory_save}, but it is not yet implemented"
             )
 
-    @staticmethod
-    def permute(array: np.ndarray, indices: np.array) -> List:
-        """Compute the permutation of an array
-
-        Args:
-            array (np.ndarray): array to be permuted
-            indices (np.array): permutation array
-
-        Returns:
-            np.ndarray: permuted array
-        """
-        if len(array) == 1:
-            return array
-        return [list(i) for i in np.take(array, indices, axis=0)]
 
     def initialize(self) -> List[Qtree]:
         """Compute the initial Q-trees, (singleton trees intially)

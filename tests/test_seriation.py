@@ -9,7 +9,8 @@ from recursiveseriation.seriation import RecursiveSeriation
 
 
 def test_seriation():
-    # Test case 1: Permute a strict circular Robinson matrix with a valid permutation array for rows and columns
+    # Test case 1: Permute a strict circular Robinson matrix with a valid
+    # permutation array for rows and columns
     R = [
         [0, 1, 3, 5, 6, 7, 7, 6, 5, 4, 3],
         [1, 0, 2, 4, 5, 6, 7, 7, 6, 5, 4],

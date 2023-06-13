@@ -233,9 +233,9 @@ class RecursiveSeriation:
         if trees is None:
             trees = self.initialize()
 
-        dmins = (
-            []
-        )  # we can save memory by not storing the dmins matrix (which is going to be a submatrix of the dissimilarity matrix)
+        # we can save memory by not storing the dmins matrix (which is going to
+        # be a submatrix of the dissimilarity matrix)
+        dmins = []
         # this tradeoff is between memory and time
 
         for tree1 in trees:

@@ -126,7 +126,8 @@ class NNGraph:
         all_visited = set()
         for v in degree_one_nodes:
             # run a dfs starting from each degree one node
-            # each of the runs correpsonds to a connected component of the graph (and thus a Qtree)
+            # each of the runs correpsonds to a connected component of the
+            # graph (and thus a Qtree)
             if v not in all_visited:
 
                 component_indices = self.depth_first_search(

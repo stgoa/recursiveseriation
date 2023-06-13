@@ -25,7 +25,7 @@ class RecursiveSeriation:
         Parameters
         ----------
         dissimilarity : Callable
-            dissimilarity function
+            dissimilarity function from [0, n-1] x [0, n-1] to [0, +inf]
         n : int
             number of elements
         """
@@ -38,7 +38,7 @@ class RecursiveSeriation:
         self.X = [
             i for i in range(n)
         ]  # list of elements to be sorted, represented by their index
-        self.order = None  # final order
+        self.order = None  # seriation ordering of the elements
 
         self.memory_save = True
 

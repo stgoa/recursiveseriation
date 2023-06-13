@@ -35,9 +35,9 @@ class Qtree:
         """
 
         self.singleton = is_singleton
-        self.left_tree = children[0]
-        self.right_tree = children[-1]
-        self.depth = depth
+        self.left_tree = children[0] # left subtree
+        self.right_tree = children[-1] # right subtree
+        self.depth = depth # depth of the Qtree (root is 0)
 
         # atributes of the root
         self.children = children
@@ -47,7 +47,7 @@ class Qtree:
 
         if not is_singleton:
             for child in children:
-                child.parent = self
+                child.parent = self 
 
     def borders(self) -> List:
         """

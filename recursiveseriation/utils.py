@@ -1,6 +1,5 @@
 # encoding=utf-8
 import numpy as np
-import types
 
 """
 Author: Santiago Armstrong
@@ -18,7 +17,7 @@ def inversepermutation(arr: np.array) -> np.array:
         np.array: inverse permutation array
     """
     N = len(arr)
-    arr2 = [0 for i in range(N)]
+    arr2 = [0 for _ in range(N)]
     for i in range(0, N):
         arr2[arr[i]] = i
     return arr2

@@ -1,11 +1,10 @@
 # encoding=utf-8
 import numpy as np
-import types
 import logging
 from recursiveseriation.qtree import Qtree
 from recursiveseriation.neighbours_graph import NNGraph
 
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Tuple
 
 """
 Author: Santiago Armstrong
@@ -31,7 +30,7 @@ class RecursiveSeriation:
             number of elements
         """
 
-        if not isinstance(dissimilarity, types.FunctionType):
+        if not isinstance(dissimilarity, Callable):
             self.diss = lambda i, j: dissimilarity[i, j]
         else:
             self.diss = dissimilarity
@@ -88,7 +87,7 @@ class RecursiveSeriation:
         A: List[Qtree],
         B: List[Qtree],
         B_prime: List[Qtree],
-    ):
+    )->str:
         """Given border candidates A and B, of an interval I, and border candidates A_prime, B_prime of the complement I^c, this procedure determines if
         I must be fixed, reversed or if it is not orientable.
 
@@ -114,7 +113,7 @@ class RecursiveSeriation:
                 return "reverse"
         return "non-orientable"
 
-    def internal_orientation(self, tree: Qtree):
+    def internal_orientation(self, tree: Qtree)->None:
         if len(tree.children) > 2 and tree.depth > 1:
 
             while not all(
@@ -155,7 +154,7 @@ class RecursiveSeriation:
                             T_i.reverse()
                             T_i.insert_in_parent()
 
-    def final_internal_orientation(self, tree: Qtree):
+    def final_internal_orientation(self, tree: Qtree)->None:
 
         while not all(
             [tree.children[i].singleton for i in range(len(tree.children))]
@@ -213,24 +212,27 @@ class RecursiveSeriation:
                             T_i.reverse()
                             T_i.insert_in_parent()
 
-    def dmin(self, tree1: Qtree, tree2: Qtree):
+    def dmin(self, tree1: Qtree, tree2: Qtree)->Tuple[float, List]:
         argdmin = None
         current_min = np.inf
         for x in tree1.borders():
             for y in tree2.borders():
-                if self.diss(x, y) < current_min:
+                # call the dissimilarity function between x and y
+                diss_x_y = self.diss(x, y)
+                if diss_x_y < current_min:
                     argdmin = [(x, y)]
-                    current_min = self.diss(x, y)
-                elif self.diss(x, y) == current_min:
+                    current_min = diss_x_y
+                elif diss_x_y == current_min:
                     argdmin.append((x, y))
         return current_min, argdmin
 
-    def sort(self, trees: Optional[List[Qtree]] = None, iter: int = 0):
+    def sort(self, trees: Optional[List[Qtree]] = None, iter: int = 0)->List[int]:
 
         if trees is None:
             trees = self.initialize()
 
-        dmins = []
+        dmins = [] # we can save memory by not storing the dmins matrix (which is going to be a submatrix of the dissimilarity matrix)
+        # this tradeoff is between memory and time
 
         for tree1 in trees:
             row = []
@@ -257,9 +259,10 @@ class RecursiveSeriation:
         dmins = np.asarray(dmins)
 
         # compute the nearest neighbours graph
-
         if self.memory_save:
-
+            # when we try to save memory, we dont store the dmins matrix
+            # this is the case when we have a large number of elements
+            # and explicitly storing the dmins matrix is not possible
             def dminw(x, y):
                 val, _ = self.dmin(x, y)
                 return val

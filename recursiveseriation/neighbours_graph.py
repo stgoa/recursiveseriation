@@ -18,10 +18,10 @@ Documentation pending
 class NNGraph:
     def __init__(
         self,
-        node_list: List,
+        node_list: List[Qtree],
         dissimilarity: Callable,
     ):
-        self.nodes = node_list  # list of nodes
+        self.nodes = node_list  # type: List[Qtree]
         self.node_ids = [
             i for i in range(len(node_list))
         ]  # internal enumeration of the elements
@@ -67,7 +67,6 @@ class NNGraph:
         return nns  # return minimal interval
 
     def get_neighbours(self):
-
         """
         Construct the neighbourhood function in O(N^2) time where N = len(weights)
         """
@@ -89,7 +88,7 @@ class NNGraph:
             if len(self.neighbourhood[i]) == 1:
                 self.borders.append(i)
 
-    def depth_first_search(self, start, visited=[]):
+    def depth_first_search(self, start:int, visited=[])->List[int]:
         """
         Depth first search algorithm
         """
@@ -113,14 +112,10 @@ class NNGraph:
         logging.debug(f"degree one nodes {self.borders}")
 
         visited = []
-
         for v in self.borders:
+            if v not in visited: #TODO: improve this with a set
 
-            if v not in visited:
-
-                # print("starting at border {}".format(v))
-
-                component = self.depth_first_search(v, visited=[])
+                component = self.depth_first_search(v, visited=[]) # get the list of nodes (index) in the component
 
                 # generate new Q tree
                 pre_depth = np.max([self.nodes[i].depth for i in component])
@@ -128,9 +123,7 @@ class NNGraph:
                     children=[self.nodes[i] for i in component],
                     depth=pre_depth + 1,
                 )
-
                 trees.append(tree)
-
                 visited += component
 
         return trees

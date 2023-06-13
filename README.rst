@@ -1,10 +1,13 @@
-# recursiveseriation
- Python implementation of the "Recursive Seriation" algorithm for reordering strict circular Robisonian matrices
+Recursive Circular Seriation
+-------------------------------
+
+Python implementation of the "Recursive Seriation" algorithm for reordering strict circular Robisonian matrices
 
 See:
-- [ArXiv](https://arxiv.org/abs/2106.05944)
-- [Google Scholar](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_VV7RLwAAAAJ&citation_for_view=_VV7RLwAAAAJ:u5HHmVD_uO8C)
-- [SIMODS](https://epubs.siam.org/doi/abs/10.1137/21M139356X)
+
+- ArXiv_
+- GoogleScholar_
+- SIMODS_
 
 For examples take a look at the notebook [example.ipynb](examples/example.ipynb)
 
@@ -35,3 +38,9 @@ Or using ``setup.py`` file
     $ cd recursiveseriation
     $ python -m venv .venv
     $ python setup.py install
+
+
+
+.. _ArXiv: https://arxiv.org/abs/2106.05944
+.. _GoogleScholar: https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_VV7RLwAAAAJ&citation_for_view=_VV7RLwAAAAJ:u5HHmVD_uO8C
+.. _SIMODS: https://epubs.siam.org/doi/abs/10.1137/21M139356X

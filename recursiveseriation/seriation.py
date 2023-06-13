@@ -87,7 +87,7 @@ class RecursiveSeriation:
         A: List[Qtree],
         B: List[Qtree],
         B_prime: List[Qtree],
-    )->str:
+    ) -> str:
         """Given border candidates A and B, of an interval I, and border candidates A_prime, B_prime of the complement I^c, this procedure determines if
         I must be fixed, reversed or if it is not orientable.
 
@@ -113,7 +113,7 @@ class RecursiveSeriation:
                 return "reverse"
         return "non-orientable"
 
-    def internal_orientation(self, tree: Qtree)->None:
+    def internal_orientation(self, tree: Qtree) -> None:
         if len(tree.children) > 2 and tree.depth > 1:
 
             while not all(
@@ -154,7 +154,7 @@ class RecursiveSeriation:
                             T_i.reverse()
                             T_i.insert_in_parent()
 
-    def final_internal_orientation(self, tree: Qtree)->None:
+    def final_internal_orientation(self, tree: Qtree) -> None:
 
         while not all(
             [tree.children[i].singleton for i in range(len(tree.children))]
@@ -212,7 +212,7 @@ class RecursiveSeriation:
                             T_i.reverse()
                             T_i.insert_in_parent()
 
-    def dmin(self, tree1: Qtree, tree2: Qtree)->Tuple[float, List]:
+    def dmin(self, tree1: Qtree, tree2: Qtree) -> Tuple[float, List]:
         argdmin = None
         current_min = np.inf
         for x in tree1.borders():
@@ -226,12 +226,16 @@ class RecursiveSeriation:
                     argdmin.append((x, y))
         return current_min, argdmin
 
-    def sort(self, trees: Optional[List[Qtree]] = None, iter: int = 0)->List[int]:
+    def sort(
+        self, trees: Optional[List[Qtree]] = None, iter: int = 0
+    ) -> List[int]:
 
         if trees is None:
             trees = self.initialize()
 
-        dmins = [] # we can save memory by not storing the dmins matrix (which is going to be a submatrix of the dissimilarity matrix)
+        dmins = (
+            []
+        )  # we can save memory by not storing the dmins matrix (which is going to be a submatrix of the dissimilarity matrix)
         # this tradeoff is between memory and time
 
         for tree1 in trees:

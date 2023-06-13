@@ -34,7 +34,7 @@ class Qtree:
             depth of the Qtree, by default 0
         """
 
-        self.singleton = is_singleton
+        self.is_singleton = is_singleton
         self.left_tree = children[0]  # left subtree
         self.right_tree = children[-1]  # right subtree
         self.depth = depth  # depth of the Qtree (root is 0)
@@ -56,7 +56,7 @@ class Qtree:
         Returns:
             List: list of elements in the border
         """
-        if self.singleton:
+        if self.is_singleton:
             return self.children
         else:
             return self.left_borders() + self.right_borders()
@@ -65,7 +65,7 @@ class Qtree:
         """
         Returns the left border of the Qtree
         """
-        if self.singleton:
+        if self.is_singleton:
             return self.children
         return self.left_tree.borders()
 
@@ -73,7 +73,7 @@ class Qtree:
         """
         Returns the right border of the Qtree
         """
-        if self.singleton:
+        if self.is_singleton:
             return self.children
         return self.right_tree.borders()
 
@@ -81,7 +81,7 @@ class Qtree:
         """
         Returns the frontier of the Qtree
         """
-        if self.singleton:
+        if self.is_singleton:
             return self.children
         else:
 
@@ -99,7 +99,7 @@ class Qtree:
 
     def external_orientation(self, element):
 
-        if not self.singleton:
+        if not self.is_singleton:
 
             logging.debug(
                 f"external orientation of {self} at element {element}"
@@ -115,7 +115,7 @@ class Qtree:
                     f"current.parent.children {current.parent.children}"
                 )
 
-                while not current.singleton and not current.oriented:
+                while not current.is_singleton and not current.oriented:
                     current.oriented = True
 
                     if current.is_at_the_left(element):
@@ -129,7 +129,7 @@ class Qtree:
 
                 current = self.right_tree
 
-                while not current.singleton and not current.oriented:
+                while not current.is_singleton and not current.oriented:
                     current.oriented = True
 
                     if current.is_at_the_left(element):
@@ -159,7 +159,7 @@ class Qtree:
         """
         Returns a string representation of the Qtree
         """
-        if self.singleton:
+        if self.is_singleton:
             return str(self.children[0]) + " "
         else:
 

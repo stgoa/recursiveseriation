@@ -118,7 +118,7 @@ class RecursiveSeriation:
 
             while not all(
                 [
-                    tree.children[i].singleton
+                    tree.children[i].is_singleton
                     for i in range(1, len(tree.children) - 1)
                 ]
             ):
@@ -129,7 +129,7 @@ class RecursiveSeriation:
 
                     T_i = tree.children[i]
 
-                    if not T_i.singleton:
+                    if not T_i.is_singleton:
 
                         A = T_i.left_borders()
                         B = T_i.right_borders()
@@ -157,7 +157,7 @@ class RecursiveSeriation:
     def final_internal_orientation(self, tree: Qtree) -> None:
 
         while not all(
-            [tree.children[i].singleton for i in range(len(tree.children))]
+            [tree.children[i].is_singleton for i in range(len(tree.children))]
         ):
             logging.debug(f"tree final {tree}")
             logging.debug(f"children {tree.children}")
@@ -166,7 +166,7 @@ class RecursiveSeriation:
 
                 T_i = tree.children[0]
 
-                if not T_i.singleton:
+                if not T_i.is_singleton:
 
                     A_prime = tree.children[-1].right_borders()
                     A = T_i.left_borders()
@@ -191,7 +191,7 @@ class RecursiveSeriation:
 
                     T_i = tree.children[i]
 
-                    if not T_i.singleton:
+                    if not T_i.is_singleton:
 
                         A_prime = tree.children[
                             (i - 1) % len(tree.children)

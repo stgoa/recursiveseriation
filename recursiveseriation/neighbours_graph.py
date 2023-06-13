@@ -1,7 +1,7 @@
 # encoding=utf-8
-import types
-from typing import Callable, List
 
+from typing import Callable, List
+import logging
 import numpy as np
 
 from recursiveseriation.qtree import Qtree
@@ -17,7 +17,9 @@ Documentation pending
 
 class NNGraph:
     def __init__(
-        self, node_list: List, dissimilarity: Callable, verbose: int = 0
+        self,
+        node_list: List,
+        dissimilarity: Callable,
     ):
         self.nodes = node_list  # list of nodes
         self.node_ids = [
@@ -33,7 +35,6 @@ class NNGraph:
         self.neighbourhood = {
             i: set() for i in self.node_ids
         }  # neighbourhood function
-        self.verbose = verbose  # verbosity level
 
         self.get_neighbours()
 
@@ -109,9 +110,7 @@ class NNGraph:
         if len(self.borders) == 0:
             self.borders.append(0)
 
-        if self.verbose > 0:
-
-            print("degree one nodes", self.borders)
+        logging.debug(f"degree one nodes {self.borders}")
 
         visited = []
 
@@ -128,25 +127,10 @@ class NNGraph:
                 tree = Qtree(
                     children=[self.nodes[i] for i in component],
                     depth=pre_depth + 1,
-                    verbose=self.verbose,
                 )
 
                 trees.append(tree)
 
                 visited += component
-
-                if self.verbose > 2:
-
-                    print("new component added: ", component)
-                    print("borders")
-                    print(
-                        tree.left_borders(),
-                        tree.right_borders(),
-                        tree.borders(),
-                    )
-                    print("left tree", tree.left_tree)
-                    print("left tree's parent", tree.left_tree.parent)
-                    print("frontier", tree.frontier())
-                    print("representation", tree)
 
         return trees

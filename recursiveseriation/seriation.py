@@ -1,10 +1,11 @@
 # encoding=utf-8
 import numpy as np
 import types
+import logging
 from recursiveseriation.qtree import Qtree
 from recursiveseriation.neighbours_graph import NNGraph
 
-from typing import Callable
+from typing import Callable, List, Optional
 
 """
 Author: Santiago Armstrong
@@ -18,7 +19,7 @@ Documentation pending
 class RecursiveSeriation:
     """docstring for RecursiveSeriation"""
 
-    def __init__(self, dissimilarity: Callable, n: int, verbose: int = 0):
+    def __init__(self, dissimilarity: Callable, n: int):
         """
         Constructor of the RecursiveSeriation class
 
@@ -28,8 +29,6 @@ class RecursiveSeriation:
             dissimilarity function
         n : int
             number of elements
-        verbose : int, optional
-            verbosity level, by default 0
         """
 
         if not isinstance(dissimilarity, types.FunctionType):
@@ -40,13 +39,11 @@ class RecursiveSeriation:
         self.X = [
             i for i in range(n)
         ]  # list of elements to be sorted, represented by their index
-
-        self.verbose = verbose  # verbosity level
         self.order = None  # final order
 
         self.memory_save = True
 
-    def permute(self, array: np.ndarray, indices: np.array) -> np.ndarray:
+    def permute(self, array: np.ndarray, indices: np.array) -> List:
         """Compute the permutation of an array
 
         Args:
@@ -60,16 +57,22 @@ class RecursiveSeriation:
             return array
         return [list(i) for i in np.take(array, indices, axis=0)]
 
-    def initial(self):
+    def initialize(self) -> List[Qtree]:
         """Compute the initial Q-trees, (singleton trees intially)"""
         trees = []
         for x in self.X:
-            tree = Qtree(children=[x], leave=True)
-            tree.singleton = True
+            tree = Qtree(children=[x], is_singleton=True)
             trees.append(tree)
         return trees
 
-    def ineq(self, A, A_prime, B, B_prime, z):
+    def ineq(
+        self,
+        A: List[Qtree],
+        A_prime: List[Qtree],
+        B: List[Qtree],
+        B_prime: List[Qtree],
+        z: int,
+    ) -> bool:
         """Compute the max-min inequality between two sets of border (Border Candidates Orientation)"""
         return max(
             np.min([self.diss(z, a) for a in A]),
@@ -79,8 +82,14 @@ class RecursiveSeriation:
             np.max([self.diss(z, b_prime) for b_prime in B_prime]),
         )
 
-    def border_candidates_orientation(self, A_prime, A, B, B_prime):
-        """Given border candidates A, A_prime, B, B_prime, of in interval I, this procedure determines if
+    def border_candidates_orientation(
+        self,
+        A_prime: List[Qtree],
+        A: List[Qtree],
+        B: List[Qtree],
+        B_prime: List[Qtree],
+    ):
+        """Given border candidates A and B, of an interval I, and border candidates A_prime, B_prime of the complement I^c, this procedure determines if
         I must be fixed, reversed or if it is not orientable.
 
         Args:
@@ -105,7 +114,7 @@ class RecursiveSeriation:
                 return "reverse"
         return "non-orientable"
 
-    def internal_orientation(self, tree):
+    def internal_orientation(self, tree: Qtree):
         if len(tree.children) > 2 and tree.depth > 1:
 
             while not all(
@@ -117,8 +126,7 @@ class RecursiveSeriation:
 
                 for i in range(1, len(tree.children) - 1):
 
-                    if self.verbose > 0:
-                        print("orienting the ", i, "-th children")
+                    logging.debug(f"orienting the {i}-th children")
 
                     T_i = tree.children[i]
 
@@ -147,17 +155,15 @@ class RecursiveSeriation:
                             T_i.reverse()
                             T_i.insert_in_parent()
 
-    def final_internal_orientation(self, tree):
+    def final_internal_orientation(self, tree: Qtree):
 
         while not all(
             [tree.children[i].singleton for i in range(len(tree.children))]
         ):
-            if self.verbose > 3:
-                print("tree final", tree)
-                print("children", tree.children)
+            logging.debug(f"tree final {tree}")
+            logging.debug(f"children {tree.children}")
 
             if len(tree.children) == 2:
-                # print("FINAL ORIENTATION")
 
                 T_i = tree.children[0]
 
@@ -172,12 +178,6 @@ class RecursiveSeriation:
                         A_prime, A, B, B_prime
                     )
 
-                    if self.verbose > 0:
-                        print("OAE", tree)
-                        print("OAE first", tree.children[0])
-                        print("OAE second", tree.children[-1])
-                        print("orientation at end", orientation)
-
                     if orientation in ["non-orientable", "correct"]:
                         T_i.insert_in_parent()
                     else:
@@ -185,25 +185,10 @@ class RecursiveSeriation:
                         T_i.insert_in_parent()
 
                     tree.children[-1].insert_in_parent()
-                    if self.verbose > 0:
-                        print("post", tree)
-
-                    if self.verbose > 3:
-
-                        print(
-                            "break condition",
-                            [
-                                (tree.children[i], tree.children[i].singleton)
-                                for i in range(len(tree.children))
-                            ],
-                        )
 
             else:
-                if self.verbose > 3:
-                    print("NOT FINAL")
+
                 for i in range(len(tree.children)):
-                    if self.verbose > 1:
-                        print("orienting the ", i, "-th children")
 
                     T_i = tree.children[i]
 
@@ -228,7 +213,7 @@ class RecursiveSeriation:
                             T_i.reverse()
                             T_i.insert_in_parent()
 
-    def dmin(self, tree1, tree2):
+    def dmin(self, tree1: Qtree, tree2: Qtree):
         argdmin = None
         current_min = np.inf
         for x in tree1.borders():
@@ -240,10 +225,10 @@ class RecursiveSeriation:
                     argdmin.append((x, y))
         return current_min, argdmin
 
-    def sort(self, trees=None, iter=0):
+    def sort(self, trees: Optional[List[Qtree]] = None, iter: int = 0):
 
         if trees is None:
-            trees = self.initial()
+            trees = self.initialize()
 
         dmins = []
 
@@ -254,9 +239,7 @@ class RecursiveSeriation:
                     # Compute dmin
                     dmin_val, argdmin = self.dmin(tree1, tree2)
 
-                    if self.verbose > 0:
-
-                        print("argdmin", dmin_val, argdmin)
+                    logging.debug(f"argdmin {dmin_val} {argdmin}")
 
                     # perform an external orientation
 
@@ -273,9 +256,6 @@ class RecursiveSeriation:
                 dmins.append(row)
         dmins = np.asarray(dmins)
 
-        if self.verbose > 0:
-            print(dmins)
-
         # compute the nearest neighbours graph
 
         if self.memory_save:
@@ -285,21 +265,20 @@ class RecursiveSeriation:
                 return val
 
             G = NNGraph(
-                node_list=trees, dissimilarity=dminw, verbose=self.verbose
+                node_list=trees,
+                dissimilarity=dminw,
             )
         else:
 
             G = NNGraph(
                 node_list=trees,
                 dissimilarity=lambda x, y: dmins[x, y],
-                verbose=self.verbose,
             )
 
         # obtain new trees from the set of connected componets
         new_trees = G.get_DFS_order()
 
-        if self.verbose > 0:
-            print("iter", iter)
+        logging.info(f"iter {iter}")
 
         if len(new_trees) == 1:
             # perform the final internal orientation
@@ -341,10 +320,9 @@ if __name__ == "__main__":
     pi = random_permutation(len(D))  # Permutation
     D = permute(D, pi)
 
-    verbose = 0
-
     rs = RecursiveSeriation(
-        dissimilarity=lambda x, y: D[x, y], n=n, verbose=verbose
+        dissimilarity=lambda x, y: D[x, y],
+        n=n,
     )
     order = rs.sort()
 

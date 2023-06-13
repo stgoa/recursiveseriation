@@ -1,8 +1,6 @@
 # encoding=utf-8
-import types
-from typing import List, Optional
-
-import numpy as np
+from typing import List
+import logging
 
 """
 Author: Santiago Armstrong
@@ -17,10 +15,9 @@ class Qtree:
     def __init__(
         self,
         children: List,
-        leave: bool = False,
+        is_singleton: bool = False,
         parent=None,
         depth: int = 0,
-        verbose: int = 0,
     ):
         """
         Constructor of the Qtree class
@@ -29,31 +26,26 @@ class Qtree:
         ----------
         children : list
             list of Qtree objects
-        leave : bool, optional
-            if the Qtree is a leave, by default False
+        is_singleton : bool, optional
+            if the Qtree is a singleton (tree leaf), by default False
         parent : Qtree, optional
             parent of the Qtree, by default None
         depth : int, optional
             depth of the Qtree, by default 0
-        verbose : int, optional
-            verbosity level, by default 0
         """
 
-        self.singleton = leave
+        self.singleton = is_singleton
         self.left_tree = children[0]
         self.right_tree = children[-1]
         self.depth = depth
 
-        self.verbose = verbose
-
         # atributes of the root
         self.children = children
-        self.non_orientable = False
+        # self.non_orientable = False
         self.oriented = False
-        # self.leave = leave
         self.parent = parent
 
-        if not leave:
+        if not is_singleton:
             for child in children:
                 child.parent = self
 
@@ -109,17 +101,19 @@ class Qtree:
 
         if not self.singleton:
 
-            if self.verbose > 0:
-                print("external orientation of", self, "at element", element)
+            logging.debug(
+                f"external orientation of {self} at element {element}"
+            )
 
             if self.is_at_the_left(element):
 
                 current = self.left_tree
 
-                if self.verbose > 1:
-                    print("current", current)
-                    print("current.parent", current.parent)
-                    print("current.parent.children", current.parent.children)
+                logging.debug(f"current {current}")
+                logging.debug(f"current.parent {current.parent}")
+                logging.debug(
+                    f"current.parent.children {current.parent.children}"
+                )
 
                 while not current.singleton and not current.oriented:
                     current.oriented = True
@@ -149,8 +143,10 @@ class Qtree:
     def insert_in_parent(self):
         """
         Inserts the Qtree in its parent Qtree (deletes a level of the Qtree)
+
+        TODO: this can be improved with a linked list, instead of a list
+        the methods index and insert are O(n) in a regular Python list
         """
-        # ojo qnodes != qtree ojo con root
         pos = self.parent.children.index(self)
         self.parent.children.pop(pos)
         aux = 0

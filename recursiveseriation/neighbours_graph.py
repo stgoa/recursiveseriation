@@ -11,9 +11,6 @@ from recursiveseriation.qtree import Qtree
 """
 Author: Santiago Armstrong
 email: sarmstrong@uc.cl
-
-
-Documentation pending
 """
 
 
@@ -23,6 +20,30 @@ class NearestNeighboursGraph:
         input_trees: List[Qtree],
         dissimilarity: Callable,
     ):
+        """
+        Class to compute the nearest neighbours graph of a set of Qtree objects.
+        This is used to compute the connected components of the graph, which correspond to the (upper hierarchy) Qtree objects.
+
+        This is done in O(N^2) time and space on the number of input Qtree objects N.
+
+        Parameters
+        ----------
+        input_trees : List[Qtree]
+            list of Qtree objects
+        dissimilarity : Callable
+            dissimilarity function between Qtree objects
+            
+        Attributes
+        ----------
+        input_trees : List[Qtree]
+            list of Qtree objects
+        node_ids : List[int]
+            internal enumeration of the elements
+        index_dissimilarity : Callable
+            internal dissimilarity function (between indices)
+        neighbourhood : defaultdict(set)
+            neighbourhood mapping
+        """
         self.input_trees = input_trees  # type: List[Qtree]
         self.node_ids = [
             i for i in range(len(input_trees))
@@ -38,10 +59,10 @@ class NearestNeighboursGraph:
     @cache
     def nearest_neighbours(self, node_id: int):
         """
-        Compute the nearest neighbours of a node in O(N) time where N = len(weights).
+        Compute the nearest neighbours of a node in O(N) time on the number of nodes N.
         Note that this is not a symmetric relation between nodes. (i.e. if j is in the nearest neighbours of i, it does not mean that i is in the nearest neighbours of j)
-
         We use a cache decorator to avoid recomputing the same values.
+
         Parameters
         ----------
         node_id : int
@@ -67,8 +88,7 @@ class NearestNeighboursGraph:
 
     def populate_neighbourhood_mapping(self) -> None:
         """
-        Construct the neighbourhood function in O(N^2) time where N = len(weights).
-
+        Populates the neighbourhood function in O(N^2) time on the number of nodes N.
         This is a symmetric mapping between nodes.
         """
 
@@ -82,7 +102,12 @@ class NearestNeighboursGraph:
 
     def get_degree_one_nodes(self) -> List[int]:
         """
-        Compute the set of degree one nodes in O(N) time where N = len(weights)
+        Compute the set of degree one nodes in O(N) time on the number of nodes N.
+
+        Returns
+        -------
+        degree_one_nodes : List[int]
+            list of degree one nodes (indices)
         """
         degree_one_nodes = []
         for i in self.node_ids:
@@ -93,10 +118,20 @@ class NearestNeighboursGraph:
 
     def depth_first_search(self, start: int, visited=None) -> List[int]:
         """
-        Depth first search algorithm.
-
+        Depth first search algorithm. This is used to compute the connected components of the graph.
         We want to keep track of the visited nodes, so that we don't visit them again. But also the order in which we visit them (since this defines an interval).
 
+        Parameters
+        ----------
+        start : int
+            index of the node in the list of nodes
+        visited : List[int]
+            list of visited nodes
+        
+        Returns
+        -------
+        visited : List[int]
+            list of visited nodes (in order)
         """
         if visited is None:
             visited = []
@@ -108,9 +143,17 @@ class NearestNeighboursGraph:
 
     def get_Qtrees_from_components(self) -> List[Qtree]:
         """
-        Compute the DFS order of the graph in O(N) time where N = len(weights), starting from the degree one nodes.
-        Each DFS run corresponds to a connected component of the graph (and thus a Qtree).
-        This returns a list of Qtree objects in DFS order.
+        Obtains the Qtree objects from the connected components of the graph. 
+
+        To do this, we:
+        1. Compute the degree one nodes of the graph.
+        2. Run a DFS starting from each degree one node (if there are no degree one nodes, we run a DFS starting from node 0).
+        3. Each of the runs corresponds to a connected component of the graph (and thus a Qtree).
+
+        Returns
+        -------
+        trees : List[Qtree]
+            list of Qtree objects
         """
         trees = []
 

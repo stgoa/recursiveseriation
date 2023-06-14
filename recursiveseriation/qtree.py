@@ -72,8 +72,7 @@ class Qtree:
         """
         if self.is_singleton:
             return self.children
-        else:
-            return self.left_borders() + self.right_borders()
+        return self.left_borders() + self.right_borders()
 
     def left_borders(self):
         """
@@ -97,13 +96,10 @@ class Qtree:
         """
         if self.is_singleton:
             return self.children
-        else:
-
-            frontier = []
-            for child in self.children:
-                frontier += child.frontier()
-
-            return frontier
+        frontier = []
+        for child in self.children:
+            frontier += child.frontier()
+        return frontier
 
     def is_at_the_left(self, element: int) -> bool:
         """
@@ -150,7 +146,6 @@ class Qtree:
             else:
 
                 current = self.right_tree
-
                 while not current.is_singleton and not current.oriented:
                     current.oriented = True
 
@@ -187,12 +182,10 @@ class Qtree:
         """
         if self.is_singleton:
             return str(self.children[0]) + " "
-        else:
-
-            ret = "["
-            for child in self.children:
-                ret += child.__repr__()
-            return ret + "]"
+        ret = "["
+        for child in self.children:
+            ret += child.__repr__()
+        return ret + "]"
 
     def reverse(self):
         """

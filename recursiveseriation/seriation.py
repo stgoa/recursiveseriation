@@ -32,11 +32,17 @@ class RecursiveSeriation:
             flag to save memory, by not storing the tree distance matrix (which is going to be a submatrix of the input dissimilarity matrix), by default False
         """
 
-        if not isinstance(dissimilarity, Callable):
-            self.element_dissimilarity = lambda i, j: dissimilarity[i, j]
-        else:
-            self.element_dissimilarity = dissimilarity
+        assert isinstance(
+            dissimilarity, Callable
+        ), "dissimilarity must be a binary function"  # check if dissimilarity is a function
+        assert isinstance(n, int) and (
+            n > 3
+        ), "n must be greater than 3 for this to make sence"  # check if n is greater than 3
+        assert (
+            dissimilarity(n - 1, n - 1) >= 0
+        ), "dissimilarity must be non-negative"  # check if dissimilarity is non-negative
 
+        self.element_dissimilarity = dissimilarity
         self.elements = [
             i for i in range(n)
         ]  # list of elements to be sorted, represented by their index
@@ -47,7 +53,6 @@ class RecursiveSeriation:
             logging.warning(
                 f"memory_save was set {self.memory_save}, but it is not yet implemented"
             )
-
 
     def initialize(self) -> List[Qtree]:
         """Compute the initial Q-trees, (singleton trees intially)
@@ -260,6 +265,7 @@ class RecursiveSeriation:
                     current_min = diss_x_y
                 elif diss_x_y == current_min:
                     argdmin.append((x, y))
+        logging.debug(f"argmin_element_pairs {argdmin}")
         return current_min, argdmin
 
     def sort(
@@ -275,6 +281,8 @@ class RecursiveSeriation:
             List[int]: seriation ordering of the elements
         """
 
+        logging.info(f"iter {iter}")
+
         # initialize the trees
         if trees is None:
             trees = self.initialize()
@@ -283,13 +291,12 @@ class RecursiveSeriation:
             for tree2 in trees:
                 if tree2 != tree1:
                     # Compute the dissimilarity between the two trees
-                    dmin_val, argdmin = self.tree_dissimilarity(tree1, tree2)
-
-                    logging.debug(f"argdmin {dmin_val} {argdmin}")
+                    argmin_element_pairs = self.tree_dissimilarity(
+                        tree1, tree2
+                    )[1]
 
                     # perform an external orientation
-                    for t in argdmin:
-                        x, y = t
+                    for x, y in argmin_element_pairs:
                         tree1.external_orientation(x)
                         tree2.external_orientation(y)
 
@@ -301,8 +308,6 @@ class RecursiveSeriation:
 
         # obtain new trees from the set of connected componets
         new_trees = G.get_Qtrees_from_components()
-
-        logging.info(f"iter {iter}")
 
         if len(new_trees) == 1:
             # perform the final internal orientation

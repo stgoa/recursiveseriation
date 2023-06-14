@@ -73,7 +73,6 @@ def test_seriation_of_distance_matrix_of_points_in_circle():
                 - np.asarray(points_in_circle[j])
             )
 
-
     rs = RecursiveSeriation(
         dissimilarity=lambda x, y: D[x, y],
         n=len(points_in_circle),

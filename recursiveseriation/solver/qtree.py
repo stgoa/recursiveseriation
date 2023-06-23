@@ -1,6 +1,6 @@
 # encoding=utf-8
 from typing import List
-import logging
+from recursiveseriation import logger
 
 """
 Author: Santiago Armstrong
@@ -119,37 +119,32 @@ class Qtree:
 
         if not self.is_singleton:
 
-            logging.debug(
+            logger.debug(
                 f"external orientation of {self} at element {element}"
             )
 
-            if self.is_at_the_left(element):
+            current, need_to_go_left = (
+                (self.left_tree, True)
+                if self.is_at_the_left(element)
+                else (self.right_tree, False)
+            )
 
-                current = self.left_tree
+            while not current.is_singleton and not current.oriented:
+                current.oriented = True
 
-                while not current.is_singleton and not current.oriented:
-                    current.oriented = True
+                is_at_the_left = current.is_at_the_left(element)
 
-                    if current.is_at_the_left(element):
-                        current.insert_in_parent()
-                    else:
-                        current.reverse()
-                        current.insert_in_parent()
+                if (not is_at_the_left and need_to_go_left) or (
+                    is_at_the_left and not need_to_go_left
+                ):
+                    current.reverse()
 
-                    current = current.left_tree
-            else:
-
-                current = self.right_tree
-                while not current.is_singleton and not current.oriented:
-                    current.oriented = True
-
-                    if current.is_at_the_left(element):
-                        current.reverse()
-                        current.insert_in_parent()
-                    else:
-                        current.insert_in_parent()
-
-                    current = current.right_tree
+                current.insert_in_parent()
+                current = (
+                    current.left_tree
+                    if need_to_go_left
+                    else current.right_tree
+                )
 
     def insert_in_parent(self):
         """

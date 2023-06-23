@@ -5,7 +5,7 @@ from recursiveseriation.utils import (
     random_permutation,
     are_circular_orderings_same,
 )
-from recursiveseriation.seriation import RecursiveSeriation
+from recursiveseriation.solver.seriation import RecursiveSeriation
 
 
 def test_seriation():
@@ -80,3 +80,35 @@ def test_seriation_of_distance_matrix_of_points_in_circle():
     order = rs.sort()
 
     assert are_circular_orderings_same(order, inversepermutation(tau))
+
+
+def test_seriation_of_large_distance_matrix_of_points_in_circle():
+
+    # generate points in the unit circle
+    points_in_circle = [
+        [np.cos(2 * np.pi * x), np.sin(2 * np.pi * x)]
+        for x in np.linspace(0, 1, 100)
+    ]
+
+    # randomly permute them
+    pi = random_permutation(len(points_in_circle))
+    points_in_circle = permute(points_in_circle, pi)
+
+    # compute the distance matrix
+    D = np.zeros((len(points_in_circle), len(points_in_circle)))
+
+    for i in range(len(points_in_circle)):
+        for j in range(len(points_in_circle)):
+            D[i, j] = np.linalg.norm(
+                np.asarray(points_in_circle[i])
+                - np.asarray(points_in_circle[j])
+            )
+
+    # seriate the distance matrix
+    rs = RecursiveSeriation(
+        dissimilarity=lambda x, y: D[x, y], n=len(points_in_circle)
+    )
+    order = rs.sort()
+
+    # check that the seriated order is the same as the original order
+    assert are_circular_orderings_same(order, inversepermutation(pi))

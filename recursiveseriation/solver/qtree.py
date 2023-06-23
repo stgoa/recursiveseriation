@@ -123,18 +123,28 @@ class Qtree:
                 f"external orientation of {self} at element {element}"
             )
 
-            current, go_left = (self.left_tree, True) if self.is_at_the_left(element) else (self.right_tree, False)
+            current, need_to_go_left = (
+                (self.left_tree, True)
+                if self.is_at_the_left(element)
+                else (self.right_tree, False)
+            )
 
             while not current.is_singleton and not current.oriented:
                 current.oriented = True
 
                 is_at_the_left = current.is_at_the_left(element)
 
-                if (not is_at_the_left and go_left) or (is_at_the_left and not go_left):
+                if (not is_at_the_left and need_to_go_left) or (
+                    is_at_the_left and not need_to_go_left
+                ):
                     current.reverse()
 
                 current.insert_in_parent()
-                current = current.left_tree if go_left else current.right_tree
+                current = (
+                    current.left_tree
+                    if need_to_go_left
+                    else current.right_tree
+                )
 
     def insert_in_parent(self):
         """

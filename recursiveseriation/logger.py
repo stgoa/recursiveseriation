@@ -51,12 +51,16 @@ def _control_logging(
 
         fmt = {
             "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.dev.ConsoleRenderer(colors=COLORAMA_INSTALLED),
+            "processor": structlog.dev.ConsoleRenderer(
+                colors=COLORAMA_INSTALLED
+            ),
             "foreign_pre_chain": COMMON_CHAIN,
         }
 
     else:
-        raise NotImplementedError("Pydantic should not allow this.")  # pragma: no cover
+        raise NotImplementedError(
+            "Pydantic should not allow this."
+        )  # pragma: no cover
 
     if dest == LogDest.CONSOLE.value:
         hndler = {
@@ -67,7 +71,9 @@ def _control_logging(
     elif dest == LogDest.FILE.value:
 
         if not log_file:
-            raise EnvVarNotFound(env_var=f"{settings.Config.env_prefix}LOG_PATH")
+            raise EnvVarNotFound(
+                env_var=f"{settings.Config.env_prefix}LOG_PATH"
+            )
 
         hndler = {
             "level": level,
@@ -143,7 +149,9 @@ def trace_using(logger):
             uuid_ = str(uuid.uuid4())
             qual = func.__qualname__
             args_repr = ",".join(repr(a) for a in args)
-            kwargs_repr = ",".join(k + "=" + repr(v) for k, v in kwargs.items())
+            kwargs_repr = ",".join(
+                k + "=" + repr(v) for k, v in kwargs.items()
+            )
             repr_ = f"{qual}({args_repr},{kwargs_repr})"
             with structlog.threadlocal.tmp_bind(
                 logger,

@@ -37,17 +37,17 @@ class LogLevel(IntEnum):
     """Explicitly define allowed logging levels."""
 
     CRITICAL = logging.CRITICAL
-    
+
     ERROR = logging.ERROR
-    
+
     WARNING = logging.WARNING
-    
+
     INFO = logging.INFO
-    
-    DEBUG =  logging.DEBUG 
-    
+
+    DEBUG = logging.DEBUG
+
     TRACE = 1 + logging.NOTSET
-    
+
     NOTSET = logging.NOTSET
 
 
@@ -56,7 +56,7 @@ class LogDest(Enum):
 
     CONSOLE = "CONSOLE"
     """Log to console"""
-    
+
     FILE = "FILE"
     """Log to file"""
 
@@ -66,7 +66,7 @@ class LogFormatter(Enum):
 
     JSON = "JSON"
     """JSONs, eg for filebeat or similar, for machines."""
-    
+
     COLOR = "COLOR"
     """pprinted, colored, for humans"""
 
@@ -76,19 +76,19 @@ class Settings(BaseSettings):
 
     PACKAGE_PATH = Path(__file__).parent
     """Package path (python files)."""
-    
+
     PROJECT_PATH = PACKAGE_PATH.parent
     """Project path (all files)."""
-    
+
     LOG_PATH: Optional[Path]
     """Path to logfile, only works if ``LOG_DESTINATION=FILE``."""
-    
+
     LOG_FORMAT: LogFormatter = LogFormatter.JSON.value
     """Log style."""
-    
+
     LOG_LEVEL: LogLevel = LogLevel.INFO.value
     """Log level from ``logging`` module."""
-    
+
     LOG_DESTINATION: LogDest = LogDest.CONSOLE.value
     """Destination for logs."""
 
@@ -97,6 +97,7 @@ class Settings(BaseSettings):
 
         env_prefix = "SERIATION_"
         use_enum_values = True
+
 
 def init_settings() -> Settings:
     """Initilize project settings"""

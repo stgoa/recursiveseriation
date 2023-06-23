@@ -9,7 +9,11 @@ See:
 - GoogleScholar_
 - SIMODS_
 
-For examples take a look at the notebooks example_points_in_circle.ipynb_ and minimal_example.ipynb_ 
+For examples take a look at the notebooks:
+
+- example_points_in_circle.ipynb_
+- minimal_example.ipynb_ 
+- performance.ipynb_
 
 Installation
 ------------
@@ -33,3 +37,4 @@ The package can be installed using poetry
 .. _SIMODS: https://epubs.siam.org/doi/abs/10.1137/21M139356X
 .. _minimal_example.ipynb: examples/minimal_example.ipynb
 .. _example_points_in_circle.ipynb: examples/example_points_in_circle.ipynb
+.. _performance.ipynb: examples/_performance.ipynb

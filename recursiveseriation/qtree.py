@@ -127,12 +127,6 @@ class Qtree:
 
                 current = self.left_tree
 
-                logging.debug(f"current {current}")
-                logging.debug(f"current.parent {current.parent}")
-                logging.debug(
-                    f"current.parent.children {current.parent.children}"
-                )
-
                 while not current.is_singleton and not current.oriented:
                     current.oriented = True
 

@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  test:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,8 +39,7 @@ jobs:
           SERIATION_LOG_LEVEL: 50
         run: |
           poetry run pytest -s -vvv
-  publish:
-    needs: test
+
       - name: Build and publish to pypi
         uses: JRubics/poetry-publish@v1.16
         with:

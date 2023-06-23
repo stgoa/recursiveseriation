@@ -18,7 +18,16 @@ For examples take a look at the notebooks:
 Installation
 ------------
 
-The package can be installed using poetry
+
+
+The package can be installed from PyPI using pip
+
+.. code-block:: console
+
+    $ pip install recursiveseriation
+
+
+or from source using poetry
 
 .. code-block:: console
 

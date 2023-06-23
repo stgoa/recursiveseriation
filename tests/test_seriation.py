@@ -45,7 +45,6 @@ def test_seriation():
 
 
 def test_seriation_of_distance_matrix_of_points_in_circle():
-
     points_in_circle = [
         [0.0, 1.0],
         [0.5, 0.8660254037844386],
@@ -83,7 +82,6 @@ def test_seriation_of_distance_matrix_of_points_in_circle():
 
 
 def test_seriation_of_large_distance_matrix_of_points_in_circle():
-
     # generate points in the unit circle
     points_in_circle = [
         [np.cos(2 * np.pi * x), np.sin(2 * np.pi * x)]

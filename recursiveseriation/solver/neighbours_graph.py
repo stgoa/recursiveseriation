@@ -171,7 +171,6 @@ class NearestNeighboursGraph:
             # each of the runs corresponds to a connected component of the
             # graph (and thus a Qtree)
             if start not in all_visited:
-
                 component_indices = self.depth_first_search(
                     start=start  # node index where to start the DFS
                 )

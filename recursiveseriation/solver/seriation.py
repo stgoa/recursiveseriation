@@ -153,17 +153,13 @@ class RecursiveSeriation:
             tree (Qtree): tree to be oriented
         """
         if len(tree.children) > 2 and tree.depth > 1:
-
             while not all(
                 [child.is_singleton for child in tree.children[1:-1]]
             ):
-
                 for i in range(1, len(tree.children) - 1):
-
                     logger.debug(f"orienting the {i}-th children of {tree}")
 
                     if not tree.children[i].is_singleton:
-
                         self.border_candidates_orientation(
                             tree=tree.children[i],
                             A_prime=(
@@ -193,9 +189,7 @@ class RecursiveSeriation:
             logger.debug(f"children {tree.children}")
 
             if len(tree.children) == 2:
-
                 if not tree.children[0].is_singleton:
-
                     self.border_candidates_orientation(
                         tree=tree.children[0],
                         A_prime=tree.children[
@@ -213,11 +207,8 @@ class RecursiveSeriation:
                     )
 
             else:
-
                 for i in range(len(tree.children)):
-
                     if not tree.children[i].is_singleton:
-
                         self.border_candidates_orientation(
                             tree=tree.children[i],
                             A_prime=tree.children[

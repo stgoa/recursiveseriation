@@ -24,11 +24,10 @@ jobs:
           poetry config virtualenvs.create false
 
       - name: Install Dependencies
-        run: poetry install --no-dev --no-interaction --no-ansi
+        run: poetry install
 
       - name: Code Quality
         run: |
-          pip install black
           poetry run black . --check
 
       - name: Test with pytest
@@ -36,5 +35,4 @@ jobs:
           SERIATION_LOG_FORMAT: COLOR
           SERIATION_LOG_LEVEL: 50
         run: |
-          pip install pytest
           poetry run pytest -s -vvv

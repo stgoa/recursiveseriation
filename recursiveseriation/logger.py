@@ -35,7 +35,6 @@ COMMON_CHAIN = [
 def _control_logging(
     settings: Settings,
 ):
-
     level = settings.LOG_LEVEL
     formatter = settings.LOG_FORMAT
     dest = settings.LOG_DESTINATION
@@ -48,7 +47,6 @@ def _control_logging(
             "foreign_pre_chain": COMMON_CHAIN,
         }
     elif formatter == LogFormatter.COLOR.value:
-
         fmt = {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.dev.ConsoleRenderer(
@@ -69,7 +67,6 @@ def _control_logging(
             "formatter": "default",
         }
     elif dest == LogDest.FILE.value:
-
         if not log_file:
             raise EnvVarNotFound(
                 env_var=f"{settings.Config.env_prefix}LOG_PATH"
@@ -161,7 +158,6 @@ def trace_using(logger):
                 args=args,
                 kwargs=kwargs,
             ) as tmp_log:
-
                 tmp_log.info(event="CALLED")
                 retval = func(*args, **kwargs)
                 tmp_log.info(event="RETURN", value=retval)

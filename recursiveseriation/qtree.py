@@ -168,13 +168,11 @@ class Qtree:
             self
         )  # position of the Qtree in the parent
         self.parent.children.pop(pos)  # delete the Qtree from the parent
-        aux = 0
-        for child in self.children:
+        for i, child in enumerate(self.children):
             child.parent = self.parent  # change the parent of the children
             self.parent.children.insert(
-                pos + aux, child
+                pos + i, child
             )  # insert the children in the parent preserving the order
-            aux += 1
 
     def __repr__(self) -> str:
         """

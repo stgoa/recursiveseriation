@@ -1,6 +1,6 @@
 [tool.poetry]
 name ="recursiveseriation"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python implementation of the 'Recursive Seriation' algorithm for reordering strict circular Robisonian matrices"
 authors = ["Santiago Armstrong <santiagoarmstrong@gmail.com>"]
 

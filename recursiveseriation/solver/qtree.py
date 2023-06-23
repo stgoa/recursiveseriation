@@ -118,7 +118,6 @@ class Qtree:
         """
 
         if not self.is_singleton:
-
             logger.debug(
                 f"external orientation of {self} at element {element}"
             )

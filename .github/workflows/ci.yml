@@ -27,7 +27,9 @@ jobs:
         run: poetry install --no-dev --no-interaction --no-ansi
 
       - name: Code Quality
-        run: poetry run black . --check
+        run: |
+          pip install black
+          poetry run black . --check
 
       - name: Test with pytest
         env:

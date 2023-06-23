@@ -131,3 +131,4 @@ poetry.lock
 
 # VS code
 .vscode/
+test.py

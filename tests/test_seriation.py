@@ -5,7 +5,7 @@ from recursiveseriation.utils import (
     random_permutation,
     are_circular_orderings_same,
 )
-from recursiveseriation.seriation import RecursiveSeriation
+from recursiveseriation.solver.seriation import RecursiveSeriation
 
 
 def test_seriation():
@@ -87,7 +87,7 @@ def test_seriation_of_distance_matrix_of_points_in_circle():
 def test_seriation_of_large_distance_matrix_of_points_in_circle():
 
     # generate points in the unit circle
-    points_in_circle = [[np.cos(2*np.pi*x), np.sin(2*np.pi*x)] for x in np.linspace(0,1,35)]
+    points_in_circle = [[np.cos(2*np.pi*x), np.sin(2*np.pi*x)] for x in np.linspace(0,1,100)]
 
 
     # randomly permute them

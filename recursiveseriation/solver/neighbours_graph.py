@@ -3,10 +3,10 @@
 from collections import defaultdict
 from functools import cache
 from typing import Callable, List
-import logging
+from recursiveseriation import logger
 import numpy as np
 
-from recursiveseriation.qtree import Qtree
+from recursiveseriation.solver.qtree import Qtree
 
 """
 Author: Santiago Armstrong
@@ -163,7 +163,7 @@ class NearestNeighboursGraph:
         ):  # if there are no degree one nodes, we have one large connected component
             degree_one_nodes.append(0)
 
-        logging.debug(f"degree one nodes {degree_one_nodes}")
+        logger.debug(f"degree one nodes {degree_one_nodes}")
 
         all_visited = set()
         for start in degree_one_nodes:

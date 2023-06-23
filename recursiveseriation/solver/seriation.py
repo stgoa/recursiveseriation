@@ -1,9 +1,9 @@
 # encoding=utf-8
 from functools import cache
 import numpy as np
-import logging
-from recursiveseriation.qtree import Qtree
-from recursiveseriation.neighbours_graph import NearestNeighboursGraph
+from recursiveseriation import logger
+from recursiveseriation.solver.qtree import Qtree
+from recursiveseriation.solver.neighbours_graph import NearestNeighboursGraph
 
 from typing import Callable, List, Optional, Tuple
 
@@ -50,7 +50,7 @@ class RecursiveSeriation:
         self.order = None  # seriation ordering of the elements
         self.memory_save = memory_save  # TODO: the cache decorator is not working with this flag
         if self.memory_save:
-            logging.warning(
+            logger.warning(
                 f"memory_save was set {self.memory_save}, but it is not yet implemented"
             )
 
@@ -139,12 +139,17 @@ class RecursiveSeriation:
         if len(tree.children) > 2 and tree.depth > 1:
 
             while not all(
-                [child.is_singleton for child in tree.children[1:-1]]
+                [
+                    tree.children[i].is_singleton
+                    for i in range(1, len(tree.children) - 1)
+                ]
             ):
 
-                for i, T_i in enumerate(tree.children[1:-1]):
+                for i in range(1, len(tree.children) - 1):
 
-                    logging.debug(f"orienting the {i}-th children")
+                    logger.debug(f"orienting the {i}-th children")
+
+                    T_i = tree.children[i]
 
                     if not T_i.is_singleton:
 
@@ -178,9 +183,11 @@ class RecursiveSeriation:
             tree (Qtree): tree to be oriented
         """
 
-        while not all([child.is_singleton for child in tree.children]):
-            logging.debug(f"tree final {tree}")
-            logging.debug(f"children {tree.children}")
+        while not all(
+            [tree.children[i].is_singleton for i in range(len(tree.children))]
+        ):
+            logger.debug(f"tree final {tree}")
+            logger.debug(f"children {tree.children}")
 
             if len(tree.children) == 2:
 
@@ -207,7 +214,9 @@ class RecursiveSeriation:
 
             else:
 
-                for i, T_i in enumerate(tree.children):
+                for i in range(len(tree.children)):
+
+                    T_i = tree.children[i]
 
                     if not T_i.is_singleton:
 
@@ -245,6 +254,7 @@ class RecursiveSeriation:
         Returns:
             Tuple[float, List]: dissimilarity between the two trees and the list of pairs of borders that achieve the minimum dissimilarity
         """
+        logger.debug(f"tree_dissimilarity {tree1}, {tree2}")
         argdmin = None
         current_min = np.inf
         for x in tree1.borders():
@@ -256,7 +266,7 @@ class RecursiveSeriation:
                     current_min = diss_x_y
                 elif diss_x_y == current_min:
                     argdmin.append((x, y))
-        logging.debug(f"argmin_element_pairs {argdmin}")
+        logger.debug(f"argmin_element_pairs {argdmin}, min {current_min}")
         return current_min, argdmin
 
     def sort(
@@ -272,7 +282,7 @@ class RecursiveSeriation:
             List[int]: seriation ordering of the elements
         """
 
-        logging.info(f"iter {iter}")
+        logger.info(f"iter {iter}")
 
         # initialize the trees
         if trees is None:

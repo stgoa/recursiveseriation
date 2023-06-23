@@ -1,6 +1,6 @@
 # encoding=utf-8
 from typing import List
-import logging
+from recursiveseriation import logger
 
 """
 Author: Santiago Armstrong
@@ -119,9 +119,23 @@ class Qtree:
 
         if not self.is_singleton:
 
-            logging.debug(
+            logger.debug(
                 f"external orientation of {self} at element {element}"
             )
+
+            #current = self.left_tree if self.is_at_the_left(element) else self.right_tree
+
+            # while not current.is_singleton and not current.oriented:
+            #     current.oriented = True
+
+            #     if current.is_at_the_left(element):
+            #         current.insert_in_parent()
+            #     else:
+            #         current.reverse()
+            #         current.insert_in_parent()
+
+            #     current = current.left_tree if current.is_at_the_left(element) else current.right_tree
+
 
             if self.is_at_the_left(element):
 
@@ -185,6 +199,6 @@ class Qtree:
         """
         self.children.reverse()
         # change left and right
-        aux = self.left_tree
-        self.left_tree = self.right_tree
-        self.right_tree = aux
+        # aux = self.left_tree
+        # self.left_tree = self.right_tree
+        # self.right_tree = aux

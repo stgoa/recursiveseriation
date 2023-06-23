@@ -40,12 +40,12 @@ class RecursiveSeriation:
         ), "n must be greater than 3 for this to make sence"  # check if n is greater than 3
         assert (
             dissimilarity(n - 1, n - 1) >= 0
-        ), "dissimilarity must be non-negative"  # check if dissimilarity is non-negative
+        ), "dissimilarity must be a binary non-negative callable"  # check if dissimilarity is non-negative
 
         self.element_dissimilarity = dissimilarity
-        self.elements = [
-            i for i in range(n)
-        ]  # list of elements to be sorted, represented by their index
+        self.elements = list(
+            range(n)
+        )  # list of elements to be sorted, represented by their index
 
         self.order = None  # seriation ordering of the elements
         self.memory_save = memory_save  # TODO: the cache decorator is not working with this flag
@@ -139,17 +139,12 @@ class RecursiveSeriation:
         if len(tree.children) > 2 and tree.depth > 1:
 
             while not all(
-                [
-                    tree.children[i].is_singleton
-                    for i in range(1, len(tree.children) - 1)
-                ]
+                [child.is_singleton for child in tree.children[1:-1]]
             ):
 
-                for i in range(1, len(tree.children) - 1):
+                for i, T_i in enumerate(tree.children[1:-1]):
 
                     logging.debug(f"orienting the {i}-th children")
-
-                    T_i = tree.children[i]
 
                     if not T_i.is_singleton:
 
@@ -183,9 +178,7 @@ class RecursiveSeriation:
             tree (Qtree): tree to be oriented
         """
 
-        while not all(
-            [tree.children[i].is_singleton for i in range(len(tree.children))]
-        ):
+        while not all([child.is_singleton for child in tree.children]):
             logging.debug(f"tree final {tree}")
             logging.debug(f"children {tree.children}")
 
@@ -214,9 +207,7 @@ class RecursiveSeriation:
 
             else:
 
-                for i in range(len(tree.children)):
-
-                    T_i = tree.children[i]
+                for i, T_i in enumerate(tree.children):
 
                     if not T_i.is_singleton:
 

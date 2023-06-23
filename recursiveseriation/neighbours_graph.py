@@ -45,9 +45,9 @@ class NearestNeighboursGraph:
             neighbourhood mapping
         """
         self.input_trees = input_trees  # type: List[Qtree]
-        self.node_ids = [
-            i for i in range(len(input_trees))
-        ]  # internal enumeration of the elements
+        self.node_ids = list(
+            range(len(input_trees))
+        )  # internal enumeration of the elements
         self.index_dissimilarity = lambda i, j: dissimilarity(
             input_trees[i], input_trees[j]
         )  # internal dissimilarity function (between indices)

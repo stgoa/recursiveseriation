@@ -17,26 +17,14 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Install Poetry
-        uses: dschep/install-poetry-action@v1.2
-
-      - name: Cache Poetry virtualenv
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: ~/.virtualenvs
-          key: poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            poetry-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Set Poetry config
+      - name: Setup Poetry
         run: |
-          poetry config settings.virtualenvs.in-project false
-          poetry config settings.virtualenvs.path ~/.virtualenvs
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry config virtualenvs.create false
 
       - name: Install Dependencies
-        run: poetry install
-        if: steps.cache.outputs.cache-hit != 'true'
+        run: poetry install --no-dev --no-interaction --no-ansi
 
       - name: Code Quality
         run: poetry run black . --check
@@ -45,4 +33,6 @@ jobs:
         env:
           SERIATION_LOG_FORMAT: COLOR
           SERIATION_LOG_LEVEL: 50
-        run: poetry run pytest
+        run: |
+          pip install pytest
+          poetry run pytest -s -vvv

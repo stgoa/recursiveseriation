@@ -86,6 +86,6 @@ The package provides a single class `RecursiveSeriation` that takes a strict cir
 .. |PyPI download month| image:: https://img.shields.io/pypi/dm/recursiveseriation.svg
    :target: https://pypi.python.org/pypi/recursiveseriation/
 .. |GitHub license| image:: https://img.shields.io/github/license/stgoa/recursiveseriation.svg
-   :target: https://github.com/stgoa//recursiveseriation/blob/master/LICENSE
+   :target: https://github.com/stgoa//recursiveseriation/blob/main/LICENSE
 .. |Passing| image:: https://github.com/stgoa/recursiveseriation/actions/workflows/ci.yml/badge.svg?branch=main
    :target: https://github.com/stgoa/recursiveseriation/actions/workflows/ci.yml

@@ -56,4 +56,4 @@ or from source using poetry
 .. |PyPI license| image:: https://img.shields.io/pypi/l/recursiveseriation.svg
    :target: https://pypi.python.org/pypi/recursiveseriation/
 .. |Passing| image:: https://github.com/stgoa/recursiveseriation/actions/workflows/ci.yml/badge.svg?branch=main
-   :target: https://pypi.python.org/pypi/recursiveseriation/
+   :target: https://github.com/stgoa/recursiveseriation/actions/workflows/ci.yml

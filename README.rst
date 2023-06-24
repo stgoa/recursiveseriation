@@ -3,7 +3,7 @@ Recursive Circular Seriation
 
 |PyPI download month|
 
-.. |PyPI download month| image:: https://img.shields.io/pypi/dm/ansicolortags.svg
+.. |PyPI download month| image:: https://img.shields.io/pypi/dm/recursiveseriation.svg
    :target: https://pypi.python.org/pypi/recursiveseriation/
 
 Python implementation of the "Recursive Seriation" algorithm for reordering strict circular Robisonian matrices presented in Armstrong, S., Guzmán, C., & Sing Long, C. A. (2021). An optimal algorithm for strict circular seriation. SIAM Journal on Mathematics of Data Science, 3(4), 1223-1250.

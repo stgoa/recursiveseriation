@@ -26,17 +26,17 @@ The package can be installed from PyPI using pip
 
 .. code-block:: console
 
-    $ pip install recursiveseriation
+    pip install recursiveseriation
 
 
 or from source using poetry
 
 .. code-block:: console
 
-    $ git clone https://github.com/stgoa/recursiveseriation.git
-    $ cd recursiveseriation
-    $ python -m venv .venv
-    $ poetry install
+    git clone https://github.com/stgoa/recursiveseriation.git
+    cd recursiveseriation
+    python -m venv .venv
+    poetry install
 
 
 

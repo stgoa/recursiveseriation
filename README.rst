@@ -38,8 +38,40 @@ or from source using poetry
     python -m venv .venv
     poetry install
 
+Usage
+------------
 
+The package provides a single class `RecursiveSeriation` that takes a strict circular Robisonian dissimilarity and returns the permutation that correctly orders the elements in the matrix in a circular way.
 
+.. code-block:: python
+
+    from recursiveseriation.solver.seriation import RecursiveSeriation
+
+    # example of a strict circular Robisonian dissimilarity (matrix)
+    R = [
+            [0, 1, 3, 5, 6, 7, 7, 6, 5, 4, 3],
+            [1, 0, 2, 4, 5, 6, 7, 7, 6, 5, 4],
+            [3, 2, 0, 1, 4, 5, 6, 7, 7, 6, 5],
+            [5, 4, 1, 0, 1, 4, 5, 6, 7, 7, 6],
+            [6, 5, 4, 1, 0, 1, 4, 5, 6, 7, 7],
+            [7, 6, 5, 4, 1, 0, 3, 4, 5, 6, 7],
+            [7, 7, 6, 5, 4, 3, 0, 1, 4, 5, 6],
+            [6, 7, 7, 6, 5, 4, 1, 0, 2, 4, 5],
+            [5, 6, 7, 7, 6, 5, 4, 2, 0, 1, 4],
+            [4, 5, 6, 7, 7, 6, 5, 4, 1, 0, 1],
+            [3, 4, 5, 6, 7, 7, 6, 5, 4, 1, 0],
+        ]
+
+    # number of elements 
+    n = len(R)
+
+    rs = RecursiveSeriation(
+        dissimilarity=lambda i, j: R[i][j],
+        n=n,
+    )
+    order = rs.sort()
+    # we obtain the identity permutation up to cyclic permutations and reversals (the elements are already ordered)
+    # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
 

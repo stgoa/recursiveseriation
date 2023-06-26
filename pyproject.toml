@@ -1,12 +1,12 @@
 [tool.poetry]
 name ="recursiveseriation"
-version = "0.1.1"
+version = "0.1.2"
 description = "Python implementation of the 'Recursive Seriation' algorithm for reordering strict circular Robisonian matrices"
 authors = ["Santiago Armstrong <santiagoarmstrong@gmail.com>"]
 
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8, <4.0"
 structlog = "^20.2.0"
 python-dotenv = "^0.15.0"
 pydantic = "^1.7.3"

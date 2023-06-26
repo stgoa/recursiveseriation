@@ -9,4 +9,4 @@ SETTINGS = init_settings()
 logger = configure_logging("recursiveseriation", SETTINGS, kidnap_loggers=True)
 
 __app_name__ = "recursiveseriation"
-__version__ = "0.1.1"
+__version__ = "0.1.2"

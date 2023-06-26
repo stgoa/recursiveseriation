@@ -11,12 +11,6 @@ See:
 - GoogleScholar_
 - SIMODS_
 
-For examples take a look at the notebooks:
-
-- example_points_in_circle.ipynb_
-- minimal_example.ipynb_ 
-- performance.ipynb_
-
 Installation
 ------------
 
@@ -73,7 +67,11 @@ The package provides a single class `RecursiveSeriation` that takes a strict cir
     # we obtain the identity permutation up to cyclic permutations and reversals (the elements are already ordered)
     # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+For examples take a look at the notebooks:
 
+- example_points_in_circle.ipynb_
+- minimal_example.ipynb_ 
+- performance.ipynb_
 
 .. _ArXiv: https://arxiv.org/abs/2106.05944
 .. _GoogleScholar: https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_VV7RLwAAAAJ&citation_for_view=_VV7RLwAAAAJ:u5HHmVD_uO8C
@@ -86,6 +84,6 @@ The package provides a single class `RecursiveSeriation` that takes a strict cir
 .. |PyPI download month| image:: https://img.shields.io/pypi/dm/recursiveseriation.svg
    :target: https://pypi.python.org/pypi/recursiveseriation/
 .. |GitHub license| image:: https://img.shields.io/github/license/stgoa/recursiveseriation.svg
-   :target: https://github.com/stgoa//recursiveseriation/blob/master/LICENSE
+   :target: https://github.com/stgoa//recursiveseriation/blob/main/LICENSE
 .. |Passing| image:: https://github.com/stgoa/recursiveseriation/actions/workflows/ci.yml/badge.svg?branch=main
    :target: https://github.com/stgoa/recursiveseriation/actions/workflows/ci.yml

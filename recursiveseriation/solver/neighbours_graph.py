@@ -1,4 +1,11 @@
-# encoding=utf-8
+# -*- coding: utf-8 -*-
+"""Nearest neighbours graph class
+
+This module contains the class to compute the nearest neighbours graph of a set of Qtree objects.
+
+Author: Santiago Armstrong
+email: sarmstrong@uc.cl
+"""
 
 from collections import defaultdict
 from functools import cache
@@ -8,10 +15,6 @@ import numpy as np
 
 from recursiveseriation.solver.qtree import Qtree
 
-"""
-Author: Santiago Armstrong
-email: sarmstrong@uc.cl
-"""
 
 
 class NearestNeighboursGraph:
@@ -71,18 +74,18 @@ class NearestNeighboursGraph:
 
         nns = None  # current arg min
         min_dist = np.inf  # current min
-        for i in self.node_ids:  # nearest neight
-            if i != node_id:
+        for candidate_id in self.node_ids:  # nearest neight
+            if candidate_id != node_id:
                 dist_i = self.index_dissimilarity(
-                    i, node_id
-                )  # compute dissimilarity between nodes
+                    candidate_id, node_id
+                )  # compute dissimilarity between nodes ids
                 if (
                     dist_i < min_dist
                 ):  # if dist of current is less than best known
                     min_dist = dist_i  # update current min
-                    nns = {i}  # update argmin
+                    nns = {candidate_id}  # update argmin
                 elif dist_i == min_dist:  # if it is as good as best know
-                    nns.add(i)  # add to argmin
+                    nns.add(candidate_id)  # add to argmin
 
         return nns  # return minimal interval
 

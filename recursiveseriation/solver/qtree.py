@@ -1,11 +1,15 @@
-# encoding=utf-8
-from typing import List
-from recursiveseriation import logger
+# -*- coding: utf-8 -*-
+""" Qtree class
 
-"""
+This module contain the class to represent a Qtree object.
+
 Author: Santiago Armstrong
 email: sarmstrong@uc.cl
 """
+
+from typing import List
+from recursiveseriation import logger
+
 
 
 class Qtree:
@@ -34,10 +38,6 @@ class Qtree:
         ----------
         is_singleton : bool
             if the Qtree is a singleton (tree leaf)
-        left_tree : Qtree
-            left subtree
-        right_tree : Qtree
-            right subtree
         depth : int
             depth of the Qtree (root is 0)
         children : list
@@ -49,8 +49,6 @@ class Qtree:
         """
 
         self.is_singleton = is_singleton
-        self.left_tree = children[0]  # left subtree
-        self.right_tree = children[-1]  # right subtree
         self.depth = depth  # depth of the Qtree (root is 0)
 
         # atributes of the root
@@ -62,6 +60,24 @@ class Qtree:
         if not is_singleton:
             for child in children:
                 child.parent = self
+    
+    @property
+    def left_tree(self)->'Qtree':
+        """Returns the left subtree of the Qtree
+
+        Returns:
+            Qtree: left subtree 
+        """
+        return self.children[0]  # left subtree
+    
+    @property
+    def right_tree(self)->'Qtree':
+        """Returns the right subtree of the Qtree
+        
+        Returns:
+            Qtree: right subtree
+        """
+        return self.children[-1] # right subtree
 
     def borders(self) -> List:
         """
@@ -103,7 +119,7 @@ class Qtree:
 
     def is_at_the_left(self, element: int) -> bool:
         """
-        Returns True if the element is in the left subtree of the Qtree
+        Returns True if the element is in the left subtree of the Qtree. False otherwise
         """
         return element in self.left_tree.frontier()
 
@@ -178,7 +194,3 @@ class Qtree:
         Reverses the Qtree
         """
         self.children.reverse()
-        # change left and right
-        aux = self.left_tree
-        self.left_tree = self.right_tree
-        self.right_tree = aux

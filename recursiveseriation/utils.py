@@ -1,10 +1,12 @@
-# encoding=utf-8
-import numpy as np
+# -*- coding: utf-8 -*-
+""" Utils module 
 
-"""
+This module contains some utility functions regarding permutations and circular orderings.
+
 Author: Santiago Armstrong
 email: sarmstrong@uc.cl
 """
+import numpy as np
 
 
 def inversepermutation(arr: np.array) -> np.array:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Top level package for mozzarella."""
+"""Top level package for recursiveseriation"""
 
 from recursiveseriation.logger import configure_logging
 from recursiveseriation.settings import init_settings

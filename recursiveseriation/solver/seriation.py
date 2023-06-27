@@ -16,7 +16,6 @@ from recursiveseriation.solver.neighbours_graph import NearestNeighboursGraph
 from typing import Callable, List, Optional, Tuple
 
 
-
 class RecursiveSeriation:
     """Recursive seriation algorithm, based on the paper "An optimal algorithm for strict circular seriation" by Armstrong, S., Guzman, C. & Sing-Long, C. (2021)."""
 

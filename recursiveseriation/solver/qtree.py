@@ -11,7 +11,6 @@ from typing import List
 from recursiveseriation import logger
 
 
-
 class Qtree:
     def __init__(
         self,
@@ -60,24 +59,24 @@ class Qtree:
         if not is_singleton:
             for child in children:
                 child.parent = self
-    
+
     @property
-    def left_tree(self)->'Qtree':
+    def left_tree(self) -> "Qtree":
         """Returns the left subtree of the Qtree
 
         Returns:
-            Qtree: left subtree 
+            Qtree: left subtree
         """
         return self.children[0]  # left subtree
-    
+
     @property
-    def right_tree(self)->'Qtree':
+    def right_tree(self) -> "Qtree":
         """Returns the right subtree of the Qtree
-        
+
         Returns:
             Qtree: right subtree
         """
-        return self.children[-1] # right subtree
+        return self.children[-1]  # right subtree
 
     def borders(self) -> List:
         """

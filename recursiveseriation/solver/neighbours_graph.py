@@ -16,7 +16,6 @@ import numpy as np
 from recursiveseriation.solver.qtree import Qtree
 
 
-
 class NearestNeighboursGraph:
     def __init__(
         self,

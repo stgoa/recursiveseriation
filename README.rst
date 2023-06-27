@@ -59,8 +59,12 @@ The package provides a single class `RecursiveSeriation` that takes a strict cir
     # number of elements 
     n = len(R)
 
+    # dissimilarity function over
+    # {0, ..., n-1}^2 -> [0, inf)
+    dissimilarity = lambda i, j: R[i][j]
+
     rs = RecursiveSeriation(
-        dissimilarity=lambda i, j: R[i][j],
+        dissimilarity=dissimilarity,
         n=n,
     )
     order = rs.sort()

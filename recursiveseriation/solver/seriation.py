@@ -1,4 +1,12 @@
-# encoding=utf-8
+# -*- coding: utf-8 -*-
+""" Seriation algorithm
+
+This module contain the class to perform the recursive seriation algorithm.
+
+Author: Santiago Armstrong
+email: sarmstrong@uc.cl
+"""
+
 from functools import cache
 import numpy as np
 from recursiveseriation import logger
@@ -7,10 +15,6 @@ from recursiveseriation.solver.neighbours_graph import NearestNeighboursGraph
 
 from typing import Callable, List, Optional, Tuple
 
-"""
-Author: Santiago Armstrong
-email: sarmstrong@uc.cl
-"""
 
 
 class RecursiveSeriation:
@@ -58,7 +62,7 @@ class RecursiveSeriation:
         ), "dissimilarity must be a binary function"  # check if dissimilarity is a function
         assert isinstance(n, int) and (
             n > 3
-        ), "n must be greater than 3 for this to make sence"  # check if n is greater than 3
+        ), "n must be greater than 3 for this to make sense"  # check if n is greater than 3
         assert (
             dissimilarity(n - 1, n - 1) >= 0
         ), "dissimilarity must be a binary non-negative callable"  # check if dissimilarity is non-negative
